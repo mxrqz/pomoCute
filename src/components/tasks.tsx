@@ -16,10 +16,14 @@ interface Tasks {
 }
 
 export default function Tasks() {
-    const [tasks, setTasks] = useState<Tasks[]>(() => {
+    const [tasks, setTasks] = useState<Tasks[]>([]);
+
+    useEffect(() => {
         const storedTasks = localStorage.getItem('tasks');
-        return storedTasks ? JSON.parse(storedTasks) : [];
-    });
+        if (storedTasks) {
+            setTasks(JSON.parse(storedTasks));
+        }
+    }, []);
 
     const input = useRef<HTMLInputElement>(null)
     const lastTaskRef = useRef<HTMLLIElement>(null)
@@ -39,8 +43,6 @@ export default function Tasks() {
     }
 
     const handleDeleteTask = (index: number) => {
-        // const resultItems = tasks.filter(task => task !== tasks[index])
-        // setTasks(resultItems)
         setTasks(prevTasks => prevTasks.filter(task => task !== tasks[index]))
     }
 
