@@ -8,29 +8,51 @@ import { Clock } from "lucide-react";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import Tasks from "@/components/tasks";
+import QuickNotes from "@/components/quick-notes";
+import Settings from "@/components/settings";
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const [timer, setTimer] = useState<{ timer: number; break: number, cycles: number, longBreak: number }>()
 
+  const [type, setType] = useState<"Video" | "Playlist">("Video")
+  const [URL, setURL] = useState<string>("https://youtu.be/jfKfPfyJRdk")
+  const [autoplay, setAutoplay] = useState<boolean>(true)
+ 
   const handleSelectedTime = (selectedTime: { timer: number; break: number, cycles: number, longBreak: number }) => {
     setTimer(selectedTime)
+  }
+
+  const handleSettings = (settings: { mediaType: "Video" | "Playlist", URL: string, autoplay: boolean }) => {
+    setType(settings.mediaType)
+    setURL(settings.URL)
+    setAutoplay(settings.autoplay)
   }
 
   return (
     <>
       <nav className="flex items-center justify-between py-5 sm:px12 lg:px-32 2xl:px-64">
         <h2 className="text-3xl font-semibold tracking-tight">PomoCute</h2>
-        <ModeToggle />
+
+        <div className="inline-flex gap-5">
+          <Settings type={type} link={URL} play={autoplay} settings={handleSettings} />
+          <ModeToggle />
+        </div>
       </nav>
 
       <section className="w-full h-full overflow-hidden flex items-center justify-center gap-10 py-5 sm:px12 lg:px-32 2xl:px-64">
-        <Pomodoro selectedTime={handleSelectedTime} />
-        
+        <Pomodoro type={type} link={URL} play={autoplay} selectedTime={handleSelectedTime} />
+
         <Separator orientation="vertical" />
 
-        <Tasks />
+        <div className="w-full h-full grid grid-rows-[1fr,2px,1fr] overflow-hidden gap-10">
+          <Tasks />
+
+          <Separator />
+
+          <QuickNotes />
+        </div>
       </section>
 
       <footer className={`w-full flex flex-col justify-center items-center bg-foreground/10 text-muted-foreground py-5 sm:px12 lg:px-32 2xl:px-64 ${inter.className}`}>

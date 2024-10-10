@@ -2,12 +2,16 @@
 
 import { useEffect, useState } from "react"
 import { Rubik_Mono_One, Inter, Baloo_Paaji_2 } from "next/font/google"
-import { Clock, Coffee } from "lucide-react"
+import { Clock, Coffee, Volume2, VolumeX } from "lucide-react"
 
 import { Button } from "./ui/button"
 import { playBreakAudio, playFocusAudio } from "./sounds"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import Ears from "./ears"
+import { Label } from "./ui/label"
+import YtIframe from "./ytIframe"
+import { Slider } from "./ui/slider"
+import { Toggle } from "./ui/toggle"
 
 const rubik = Rubik_Mono_One({
     weight: ['400'],
@@ -20,6 +24,9 @@ const inter = Inter({ subsets: ['latin'] })
 
 interface Pomodoro {
     selectedTime: (selectedTimer: { timer: number; break: number, cycles: number, longBreak: number }) => void;
+    type: "Video" | "Playlist",
+    link: string,
+    play: boolean
 }
 
 const classic = {
@@ -59,12 +66,23 @@ const timers: Record<TimerOptions, { timer: number, break: number, cycles: numbe
     extended: extended
 }
 
-export default function Pomodoro({ selectedTime }: Pomodoro) {
+export default function Pomodoro({ selectedTime, type, link, play }: Pomodoro) {
+    const extractYouTubeID = () => {
+        const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube-nocookie\.com\/(?:v|e(?:mbed)?)\/|(?:watch\?v=))([^&\n]{11})/;
+        
+        const match = link.match(regex);
+        return match ? match[1] : "jfKfPfyJRdk";
+    }
+
+    const videoId = extractYouTubeID()
+
     const [selectedTimer, setSelectedTimer] = useState<{ timer: number, break: number, cycles: number, longBreak: number }>(classic)
     const [timeLeft, setTimeLeft] = useState<number>(selectedTimer.timer * 60)
     const [isActive, setIsActive] = useState<boolean>(false)
     const [isBreak, setIsBreak] = useState<boolean>(false)
     const [cycles, setCycles] = useState<number>(0)
+    const [soundMuted, setSoundMuted] = useState<boolean>(false)
+    const [volume, setVolume] = useState<number>(33)
 
     const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0')
     const seconds = String(timeLeft % 60).padStart(2, '0')
@@ -139,7 +157,7 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
                         <span className={`text-5xl text-muted-foreground font-medium ${baloo.className}`}>{isBreak ? 'Momento de Pausa' : 'Momento de Foco'}</span>
                     </div>
 
-                    <div className={`flex items-center gap-5 text-lg text-muted-foreground ${inter.className} mt-10`}>
+                    <div className={`flex items-center gap-5 text-lg text-muted-foreground ${inter.className}`}>
                         <span className="inline-flex items-center gap-1">
                             <Clock size={24} />
                             Ciclo {cycles} de {selectedTimer.cycles}
@@ -177,6 +195,47 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
                         </SelectContent>
                     </Select>
                 </div>
+
+                <div className="w-full inline-flex items-center justify-between">
+                    <div className="inline-flex gap-5 items-center w-full">
+                        {/* <div className="inline-flex items-center gap-2">
+                            <Switch
+                                id="sound-toggle"
+                                checked={soundMuted}
+                                onCheckedChange={setSoundMuted}
+                            />
+                            <Label htmlFor="sound-toggle">
+                                {soundMuted ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                                <span className="sr-only">Toggle sound</span>
+                            </Label>
+                        </div> */}
+
+                        <div className="inline-flex items-center gap-2 w-fit">
+                            <Label htmlFor="volume-slider" className="flex items-center gap-2">
+                                <Toggle className="p-2"
+                                    onClick={(e) => e.stopPropagation()}
+                                    onPressedChange={setSoundMuted}
+                                    aria-label="Toggle Sound"
+                                >
+                                    {soundMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                                </Toggle>
+                                <span className="sr-only">Volume slider</span>
+                            </Label>
+
+                            <Slider id="volume-slider" className="w-32"
+                                onValueChange={(e) => setVolume(e[0])}
+                                defaultValue={[33]}
+                                max={100}
+                                step={1}
+                            />
+                        </div>
+                    </div>
+
+                    <span className="w-fit text-nowrap">Pomodoros Completos: </span>
+                </div>
+
+                <YtIframe id={videoId} playlistId={videoId} playlist={type === "Playlist" ? true : false} autoplay={play} className="" isSoundMuted={soundMuted} volume={volume} />
+
             </div>
         </div>
     )

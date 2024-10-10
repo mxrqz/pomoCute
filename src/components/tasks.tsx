@@ -7,7 +7,7 @@ import { KeyboardEvent, useEffect, useRef, useState } from "react"
 import { ScrollArea, ScrollBar } from "./ui/scroll-area"
 import { playToDoItemCompleted } from "./sounds"
 import { Button } from "./ui/button"
-import { Trash2 } from "lucide-react"
+import { Plus, Trash2 } from "lucide-react"
 import { Separator } from "./ui/separator"
 
 interface Tasks {
@@ -17,14 +17,6 @@ interface Tasks {
 
 export default function Tasks() {
     const [tasks, setTasks] = useState<Tasks[]>([]);
-
-    useEffect(() => {
-        const storedTasks = localStorage.getItem('tasks');
-        if (storedTasks) {
-            setTasks(JSON.parse(storedTasks));
-        }
-    }, []);
-
     const input = useRef<HTMLInputElement>(null)
     const lastTaskRef = useRef<HTMLLIElement>(null)
 
@@ -59,6 +51,13 @@ export default function Tasks() {
     };
 
     useEffect(() => {
+        const storedTasks = localStorage.getItem('tasks');
+        if (storedTasks) {
+            setTasks(JSON.parse(storedTasks));
+        }
+    }, []);
+
+    useEffect(() => {
         if (lastTaskRef.current) {
             lastTaskRef.current.scrollIntoView({ behavior: 'smooth' });
         }
@@ -69,10 +68,10 @@ export default function Tasks() {
     }, [tasks]);
 
     return (
-        <div className="w-full h-full flex flex-col gap-10 items-center p-0">
+        <div className="w-full h-full flex flex-col gap-10 items-center p-0 overflow-hidden">
             <h3 className="text-3xl font-semibold">Tarefa Diárias</h3>
 
-            <div className="w-full max-h-full flex flex-col gap-2 justify-between overflow-hidden">
+            <div className="w-full h-full flex flex-col gap-2 justify-between overflow-hidden">
                 <ScrollArea className="w-full">
                     <ul className="w-full flex flex-col gap-5">
                         {tasks.map((task, index) => (
@@ -97,11 +96,17 @@ export default function Tasks() {
                     <ScrollBar orientation="vertical" />
                 </ScrollArea>
 
-                <Input className="focus-visible:ring-0 focus-visible:border-ring min-h-9"
-                    ref={input}
-                    placeholder="Adicione uma nova Tarefa"
-                    onKeyDown={e => handleEnter(e)}
-                />
+                <div className="w-full inline-flex items-center gap-2">
+                    <Input className="focus-visible:ring-0 focus-visible:border-ring min-h-9"
+                        ref={input}
+                        placeholder="Adicione uma nova Tarefa"
+                        onKeyDown={e => handleEnter(e)}
+                    />
+
+                    <Button className="min-h-9 aspect-square border flex items-center justify-center rounded-md p-0">
+                        <Plus />
+                    </Button>
+                </div>
             </div>
         </div>
     )
