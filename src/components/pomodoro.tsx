@@ -24,6 +24,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 interface Pomodoro {
     selectedTime: (selectedTimer: { timer: number; break: number, cycles: number, longBreak: number }) => void;
+    returnIndex: (index: number) => void,
+    currentIndex: number,
     type: "Video" | "Playlist",
     link: string,
     play: boolean
@@ -66,12 +68,23 @@ const timers: Record<TimerOptions, { timer: number, break: number, cycles: numbe
     extended: extended
 }
 
-export default function Pomodoro({ selectedTime, type, link, play }: Pomodoro) {
+export default function Pomodoro({ selectedTime, returnIndex, type, link, play, currentIndex }: Pomodoro) {
     const extractYouTubeID = () => {
-        const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube-nocookie\.com\/(?:v|e(?:mbed)?)\/|(?:watch\?v=))([^&\n]{11})/;
-        
-        const match = link.match(regex);
-        return match ? match[1] : "jfKfPfyJRdk";
+        const videoRegex = /(?:youtube\.com\/.*(?:v=|\/v\/|\/embed\/|\/shorts\/|\/watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        const playlistRegex = /[?&]list=([a-zA-Z0-9_-]+)/;
+
+        const videoMatch = link.match(videoRegex);
+        const playlistMatch = link.match(playlistRegex);
+
+        if (!videoMatch && !playlistMatch) return "jfKfPfyJRdk";
+
+        if (type === "Video" && videoMatch) {
+            return videoMatch[1];
+        } else if (type === "Playlist" && playlistMatch) {
+            return playlistMatch[1];
+        }
+
+        return "jfKfPfyJRdk";
     }
 
     const videoId = extractYouTubeID()
@@ -140,6 +153,10 @@ export default function Pomodoro({ selectedTime, type, link, play }: Pomodoro) {
         setTimeLeft(selectedTimer.timer * 60)
         selectedTime(selectedTimer);
     }, [selectedTime, selectedTimer])
+
+    const handleIndex = (index: number) => {
+        returnIndex(index)
+    }
 
     return (
         <div className="flex w-full h-full gap-10">
@@ -234,8 +251,18 @@ export default function Pomodoro({ selectedTime, type, link, play }: Pomodoro) {
                     <span className="w-fit text-nowrap">Pomodoros Completos: </span>
                 </div>
 
-                <YtIframe id={videoId} playlistId={videoId} playlist={type === "Playlist" ? true : false} autoplay={play} className="" isSoundMuted={soundMuted} volume={volume} />
-
+                <YtIframe
+                    // key={key}
+                    className=""
+                    isSoundMuted={soundMuted}
+                    volume={volume}
+                    id={videoId}
+                    playlistId={videoId}
+                    playlist={type === "Playlist" ? true : false}
+                    autoplay={play}
+                    index={currentIndex}
+                    indexChange={handleIndex}
+                />
             </div>
         </div>
     )

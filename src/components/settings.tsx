@@ -6,8 +6,16 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Switch } from "./ui/switch";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
+
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from "./ui/tooltip"
+  
 
 interface SettingsProps {
     type: "Video" | "Playlist",
@@ -21,10 +29,10 @@ export default function Settings({ type, link, play, settings }: SettingsProps) 
     const [URL, setURL] = useState<string>(link)
     const [autoplay, setAutoplay] = useState<boolean | string>(play)
 
-    useEffect(() => {
+    const save = () => {
         const auto = autoplay ? true : false
         settings({ mediaType, URL, autoplay: auto });
-    }, [mediaType, URL, autoplay, settings]);
+    }
 
     return (
         <Dialog>
@@ -49,7 +57,10 @@ export default function Settings({ type, link, play, settings }: SettingsProps) 
                         <Label htmlFor="switch" className="text-right">Tipo de mídia</Label>
 
                         <div className="inline-flex items-center gap-2">
-                            <Switch onCheckedChange={checked => checked ? setMediaType("Playlist") : setMediaType("Video")} />
+                            <Switch
+                                checked={mediaType === 'Playlist'}
+                                onCheckedChange={checked => checked ? setMediaType("Playlist") : setMediaType("Video")}
+                            />
                             <span>{mediaType}</span>
                         </div>
                     </div>
@@ -85,7 +96,19 @@ export default function Settings({ type, link, play, settings }: SettingsProps) 
 
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button type="button">Close</Button>
+                        <Button variant={"outline"} type="button">Fechar</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <Button type="button" onClick={save} disabled>Salvar</Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Não disponível ainda</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>

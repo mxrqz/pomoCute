@@ -3,7 +3,7 @@
 "use client"
 
 import Script from "next/script"
-import { useEffect, useRef } from "react";
+import { useEffect, useRef} from "react";
 
 interface YtIframeProps {
     id: string,
@@ -12,12 +12,21 @@ interface YtIframeProps {
     className: string,
     isSoundMuted: boolean,
     volume: number,
-    autoplay: boolean
+    autoplay: boolean,
+    index: number,
+    indexChange: (playlistIndex: number) => void
 }
 
-export default function YtIframe({ id, playlistId, playlist, className, isSoundMuted, volume, autoplay }: YtIframeProps) {
+export default function YtIframe({ id, playlistId, playlist, className, isSoundMuted, volume, autoplay, index, indexChange }: YtIframeProps) {
     const playerRef = useRef<HTMLDivElement | null>(null);
     const youtubePlayer = useRef<any>(null);
+    // const [playlistIndex, setPlaylistIndex] = useState<number>(index)
+
+    // useEffect(() => {
+    //     indexChange(playlistIndex)
+    // }, [indexChange, playlistIndex])
+    
+    console.log(index)
 
     useEffect(() => {
         const tag = document.createElement('script');
@@ -30,7 +39,7 @@ export default function YtIframe({ id, playlistId, playlist, className, isSoundM
                 videoId: playlist ? null : id,
                 events: {
                     onReady: onPlayerReady,
-                    // onStateChange: onPlayerStateChange,
+                    onStateChange: onPlayerStateChange,
                 },
                 playerVars: {
                     autoplay: autoplay ? 1 : 0,
@@ -44,16 +53,48 @@ export default function YtIframe({ id, playlistId, playlist, className, isSoundM
                 event.target.loadPlaylist({
                     list: playlistId,
                     listType: 'playlist',
+                    index
                 });
+            } else {
+                event.target.loadVideoById(id);
+            }
+
+            if (isSoundMuted) {
+                event.target.mute();
+            } else {
+                event.target.unMute();
+            }
+
+            event.target.setVolume(volume);
+        };
+
+        const onPlayerStateChange = (event: any) => {
+            if (event.data === (window as any).YT.PlayerState.PLAYING && playlist) {
+                const currentPlaylistIndex = youtubePlayer.current.getPlaylistIndex();
+                // setPlaylistIndex(currentPlaylistIndex)
+                indexChange(currentPlaylistIndex)
             }
         };
 
-        return () => {
-            if (youtubePlayer.current) {
-                youtubePlayer.current.destroy();
-            }
-        };
-    }, [autoplay, id, playlist, playlistId]);
+        // return () => {
+        //     if (youtubePlayer.current) {
+        //         youtubePlayer.current.destroy();
+        //     }
+        // };
+    }, [autoplay, id, index, indexChange, isSoundMuted, playlist, playlistId, volume]);
+
+    useEffect(() => {
+        if (!youtubePlayer.current) return;
+
+        if (playlist) {
+            youtubePlayer.current.loadPlaylist({
+                list: playlistId,
+                listType: 'playlist',
+            });
+        } else {
+            youtubePlayer.current.loadVideoById(id);
+        }
+    }, [id, playlistId, playlist]);
 
     useEffect(() => {
         if (!youtubePlayer.current) return
@@ -70,26 +111,11 @@ export default function YtIframe({ id, playlistId, playlist, className, isSoundM
         youtubePlayer.current.setVolume(volume)
     }, [volume])
 
-    // const pauseVideo = () => {
-    //     if (youtubePlayer.current) {
-    //         youtubePlayer.current.mute();
-    //     }
-    // };
-
-    // const unmuteVideo = () => {
-    //     if (youtubePlayer.current) {
-    //         youtubePlayer.current.unMute();
-    //     }
-    // };
-
     return (
         <>
-            <div
-                className={className}
-                ref={playerRef}
-            />
-
             <Script src="https://www.youtube.com/iframe_api" />
+
+            <div className={className} ref={playerRef} />
         </>
     )
 }
