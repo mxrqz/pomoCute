@@ -6,32 +6,47 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Switch } from "./ui/switch";
-import { useState } from "react";
-import { Checkbox } from "./ui/checkbox";
-
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-  } from "./ui/tooltip"
-  
+import { useState, useEffect } from "react";
+// import { Checkbox } from "./ui/checkbox";
 
 interface SettingsProps {
-    type: "Video" | "Playlist",
-    link: string,
-    play: boolean
     settings: (settings: { mediaType: "Video" | "Playlist", URL: string, autoplay: boolean }) => void
 }
 
-export default function Settings({ type, link, play, settings }: SettingsProps) {
-    const [mediaType, setMediaType] = useState<"Video" | "Playlist">(type)
-    const [URL, setURL] = useState<string>(link)
-    const [autoplay, setAutoplay] = useState<boolean | string>(play)
+export default function Settings({ settings }: SettingsProps) {
+    const [type, setType] = useState<"Video" | "Playlist">()
+    const [URL, setURL] = useState<string>()
+    const [autoplay, setAutoplay] = useState<boolean>()
+    const [index, setIndex] = useState<number>(0)
+
+    useEffect(() => {
+        const musicItems = localStorage.getItem('music');
+        if (!musicItems) {
+            setType("Video");
+            setURL("https://youtu.be/ryDEN4vzzGg")
+            setIndex(0)
+            setAutoplay(true)
+
+            settings({ mediaType: "Video", URL: "https://youtu.be/ryDEN4vzzGg", autoplay: true });
+            return
+        }
+
+        const { type, URL, autoplay, index } = JSON.parse(musicItems)
+        setType(type)
+        setURL(URL)
+        setIndex(index)
+        setAutoplay(autoplay)
+
+        settings({ mediaType: type, URL, autoplay });
+    }, [settings]);
 
     const save = () => {
-        const auto = autoplay ? true : false
-        settings({ mediaType, URL, autoplay: auto });
+        if (!type || !URL || !autoplay) return
+
+        settings({ mediaType: type, URL, autoplay });
+
+        const musicItems = { type, URL, autoplay, index };
+        localStorage.setItem('music', JSON.stringify(musicItems));
     }
 
     return (
@@ -58,16 +73,16 @@ export default function Settings({ type, link, play, settings }: SettingsProps) 
 
                         <div className="inline-flex items-center gap-2">
                             <Switch
-                                checked={mediaType === 'Playlist'}
-                                onCheckedChange={checked => checked ? setMediaType("Playlist") : setMediaType("Video")}
+                                checked={type === 'Playlist'}
+                                onCheckedChange={checked => checked ? setType("Playlist") : setType("Video")}
                             />
-                            <span>{mediaType}</span>
+                            <span>{type}</span>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="mediaType" className="text-right">
-                            {mediaType} URL
+                            {type} URL
                         </Label>
 
                         <Input className="col-span-3"
@@ -82,7 +97,7 @@ export default function Settings({ type, link, play, settings }: SettingsProps) 
                         />
                     </div>
 
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    {/* <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="mediaType" className="text-right">
                             AutoPlay
                         </Label>
@@ -91,24 +106,16 @@ export default function Settings({ type, link, play, settings }: SettingsProps) 
                             checked={autoplay ? true : false}
                             onCheckedChange={setAutoplay}
                         />
-                    </div>
+                    </div> */}
                 </div>
 
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button variant={"outline"} type="button">Fechar</Button>
                     </DialogClose>
+
                     <DialogClose asChild>
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger>
-                                    <Button type="button" onClick={save} disabled>Salvar</Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Não disponível ainda</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
+                        <Button type="button" onClick={save}>Salvar</Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>

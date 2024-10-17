@@ -2,21 +2,17 @@
 
 import { useEffect, useState } from "react"
 import { Rubik_Mono_One, Inter, Baloo_Paaji_2 } from "next/font/google"
-import { Clock, Coffee, Volume2, VolumeX } from "lucide-react"
+import { Clock, Coffee } from "lucide-react"
 
 import { Button } from "./ui/button"
 import { playBreakAudio, playFocusAudio } from "./sounds"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import Ears from "./ears"
-import { Label } from "./ui/label"
-import YtIframe from "./ytIframe"
-import { Slider } from "./ui/slider"
-import { Toggle } from "./ui/toggle"
 
-const rubik = Rubik_Mono_One({
-    weight: ['400'],
-    subsets: ['latin']
-})
+// const rubik = Rubik_Mono_One({
+//     weight: ['400'],
+//     subsets: ['latin']
+// })
 
 const baloo = Baloo_Paaji_2({ subsets: ['latin'] })
 
@@ -24,11 +20,6 @@ const inter = Inter({ subsets: ['latin'] })
 
 interface Pomodoro {
     selectedTime: (selectedTimer: { timer: number; break: number, cycles: number, longBreak: number }) => void;
-    returnIndex: (index: number) => void,
-    currentIndex: number,
-    type: "Video" | "Playlist",
-    link: string,
-    play: boolean
 }
 
 const classic = {
@@ -68,34 +59,12 @@ const timers: Record<TimerOptions, { timer: number, break: number, cycles: numbe
     extended: extended
 }
 
-export default function Pomodoro({ selectedTime, returnIndex, type, link, play, currentIndex }: Pomodoro) {
-    const extractYouTubeID = () => {
-        const videoRegex = /(?:youtube\.com\/.*(?:v=|\/v\/|\/embed\/|\/shorts\/|\/watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-        const playlistRegex = /[?&]list=([a-zA-Z0-9_-]+)/;
-
-        const videoMatch = link.match(videoRegex);
-        const playlistMatch = link.match(playlistRegex);
-
-        if (!videoMatch && !playlistMatch) return "jfKfPfyJRdk";
-
-        if (type === "Video" && videoMatch) {
-            return videoMatch[1];
-        } else if (type === "Playlist" && playlistMatch) {
-            return playlistMatch[1];
-        }
-
-        return "jfKfPfyJRdk";
-    }
-
-    const videoId = extractYouTubeID()
-
+export default function Pomodoro({ selectedTime }: Pomodoro) {
     const [selectedTimer, setSelectedTimer] = useState<{ timer: number, break: number, cycles: number, longBreak: number }>(classic)
     const [timeLeft, setTimeLeft] = useState<number>(selectedTimer.timer * 60)
     const [isActive, setIsActive] = useState<boolean>(false)
     const [isBreak, setIsBreak] = useState<boolean>(false)
     const [cycles, setCycles] = useState<number>(0)
-    const [soundMuted, setSoundMuted] = useState<boolean>(false)
-    const [volume, setVolume] = useState<number>(33)
 
     const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0')
     const seconds = String(timeLeft % 60).padStart(2, '0')
@@ -154,27 +123,24 @@ export default function Pomodoro({ selectedTime, returnIndex, type, link, play, 
         selectedTime(selectedTimer);
     }, [selectedTime, selectedTimer])
 
-    const handleIndex = (index: number) => {
-        returnIndex(index)
-    }
-
     return (
-        <div className="flex w-full h-full gap-10">
-            <div className="flex flex-col gap-5 items-center relative">
-                <Ears className="w-96 h-fit fill-foreground" />
+        <div className="flex justify-center 2xl:gap-10">
+            <div className="flex flex-col gap-5 items-center relative h-fit">
+                <Ears className="w-32 2xl:w-96 h-fit fill-foreground" />
 
                 <div className="flex flex-col gap-5 items-center">
                     <div className="flex flex-col items-center">
-                        <div className={`text-[12rem] leading-none font-mono ${rubik.className} flex items-center`}>
+                        {/* ${rubik.className} */}
+                        <div className={`h-fit text-[6rem] 2xl:text-[12rem] leading-none font-mono  flex items-center text-center`}>
                             <span>{minutes}</span>
                             <span>:</span>
                             <span>{seconds}</span>
                         </div>
 
-                        <span className={`text-5xl text-muted-foreground font-medium ${baloo.className}`}>{isBreak ? 'Momento de Pausa' : 'Momento de Foco'}</span>
+                        <span className={`text-2xl 2xl:text-5xl text-muted-foreground font-medium ${baloo.className}`}>{isBreak ? 'Momento de Pausa' : 'Momento de Foco'}</span>
                     </div>
 
-                    <div className={`flex items-center gap-5 text-lg text-muted-foreground ${inter.className}`}>
+                    <div className={`flex items-center gap-5 text-sm 2xl:text-lg text-muted-foreground ${inter.className}`}>
                         <span className="inline-flex items-center gap-1">
                             <Clock size={24} />
                             Ciclo {cycles} de {selectedTimer.cycles}
@@ -189,18 +155,18 @@ export default function Pomodoro({ selectedTime, returnIndex, type, link, play, 
 
                 <div className="flex gap-2">
                     {isActive ? (
-                        <Button className="text-lg font-medium" onClick={pauseTimer}>Pause</Button>
+                        <Button className="text-sm 2xl:text-lg font-medium" onClick={pauseTimer}>Pause</Button>
                     ) : (
-                        <Button className="text-lg font-medium" onClick={startTimer}>Start</Button>
+                        <Button className="text-sm 2xl:text-lg font-medium" onClick={startTimer}>Start</Button>
                     )}
 
-                    <Button variant={"outline"} className="text-lg font-medium" onClick={resetTimer}>Reset</Button>
+                    <Button variant={"outline"} className="text-sm 2xl:text-lg font-medium" onClick={resetTimer}>Reset</Button>
 
                     <Select
                         defaultValue="classic"
                         onValueChange={(value: TimerOptions) => setSelectedTimer(timers[value])}
                     >
-                        <SelectTrigger className="text-lg font-medium min-w-[150px]">
+                        <SelectTrigger className="text-sm 2xl:text-lg font-medium min-w-[150px]">
                             <SelectValue placeholder={'Pomodoro'} />
                         </SelectTrigger>
 
@@ -212,57 +178,6 @@ export default function Pomodoro({ selectedTime, returnIndex, type, link, play, 
                         </SelectContent>
                     </Select>
                 </div>
-
-                <div className="w-full inline-flex items-center justify-between">
-                    <div className="inline-flex gap-5 items-center w-full">
-                        {/* <div className="inline-flex items-center gap-2">
-                            <Switch
-                                id="sound-toggle"
-                                checked={soundMuted}
-                                onCheckedChange={setSoundMuted}
-                            />
-                            <Label htmlFor="sound-toggle">
-                                {soundMuted ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-                                <span className="sr-only">Toggle sound</span>
-                            </Label>
-                        </div> */}
-
-                        <div className="inline-flex items-center gap-2 w-fit">
-                            <Label htmlFor="volume-slider" className="flex items-center gap-2">
-                                <Toggle className="p-2"
-                                    onClick={(e) => e.stopPropagation()}
-                                    onPressedChange={setSoundMuted}
-                                    aria-label="Toggle Sound"
-                                >
-                                    {soundMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                                </Toggle>
-                                <span className="sr-only">Volume slider</span>
-                            </Label>
-
-                            <Slider id="volume-slider" className="w-32"
-                                onValueChange={(e) => setVolume(e[0])}
-                                defaultValue={[33]}
-                                max={100}
-                                step={1}
-                            />
-                        </div>
-                    </div>
-
-                    <span className="w-fit text-nowrap">Pomodoros Completos: </span>
-                </div>
-
-                <YtIframe
-                    // key={key}
-                    className=""
-                    isSoundMuted={soundMuted}
-                    volume={volume}
-                    id={videoId}
-                    playlistId={videoId}
-                    playlist={type === "Playlist" ? true : false}
-                    autoplay={play}
-                    index={currentIndex}
-                    indexChange={handleIndex}
-                />
             </div>
         </div>
     )
