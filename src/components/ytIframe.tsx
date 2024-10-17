@@ -38,7 +38,9 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
 
         if (playlist && playlistMatch) {
             return playlistMatch[1];
-        } else if (!playlist && videoMatch) {
+        } 
+        
+        if (!playlist && videoMatch) {
             return videoMatch[1];
         }
 
@@ -119,7 +121,8 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
 
         const onPlayerStateChange = (event: any) => {
             if (event.data === (window as any).YT.PlayerState.PLAYING && playlist) {
-                // const currentPlaylistIndex = youtubePlayer.current.getPlaylistIndex();
+                const currentPlaylistIndex = youtubePlayer.current.getPlaylistIndex();
+                saveIndex(currentPlaylistIndex)
                 // indexChange(currentPlaylistIndex)
             }
 
@@ -156,13 +159,18 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
                 clearInterval(interval); // Interromper o intervalo caso o vídeo seja pausado ou tenha terminado
             }
         };
+        
+        const saveIndex = (newIndex: number) => {
+            const musicItems = { type: playlist ? "Playlist" : "Video", URL: videoURL, autoplay, index: newIndex };
+            localStorage.setItem('music', JSON.stringify(musicItems));
+        }
 
         // return () => {
         //     if (youtubePlayer.current) {
         //         youtubePlayer.current.destroy();
         //     }
         // };
-    }, [autoplay, id, index, playlist, soundMuted, volume]);
+    }, [autoplay, id, index, playlist, soundMuted, videoURL, volume]);
 
     useEffect(() => {
         if (!youtubePlayer.current) return;
@@ -234,13 +242,13 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
                                 {/* <Music size={48} /> */}
 
                                 {isPaused ? (
-                                    <Play size={48} onClick={() => setIsPaused(false)} cursor={"pointer"} />
+                                    <Play size={48} onClick={() => setIsPaused(false)} cursor={"pointer"} className="shrink-0" />
                                 ) : (
-                                    <Pause size={48} onClick={() => setIsPaused(true)} cursor={"pointer"} />
+                                    <Pause size={48} onClick={() => setIsPaused(true)} cursor={"pointer"} className="shrink-0" />
                                 )}
 
                                 <div className="flex flex-col">
-                                    <span className="font-bold uppercase">{musicDetails.title}</span>
+                                    <span className="font-bold uppercase line-clamp-2">{musicDetails.title}</span>
                                     <span className="font-semibold text-muted-foreground">{musicDetails.author}</span>
                                 </div>
                             </div>
@@ -276,7 +284,7 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
                     )}
                 </div>
 
-                <div className="h-24 w-full" ref={playerRef} />
+                <div className="h-24 w-full hidden" ref={playerRef} />
             </div>
         </>
     )

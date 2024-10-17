@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Rubik_Mono_One, Inter, Baloo_Paaji_2 } from "next/font/google"
+// import { Rubik_Mono_One, } from "next/font/google"
+import { Inter, Baloo_Paaji_2 } from "next/font/google"
 import { Clock, Coffee } from "lucide-react"
 
 import { Button } from "./ui/button"
@@ -126,7 +127,7 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
     return (
         <div className="flex justify-center 2xl:gap-10">
             <div className="flex flex-col gap-5 items-center relative h-fit">
-                <Ears className="w-32 2xl:w-96 h-fit fill-foreground" />
+                <Ears className="w-32 2xl:w-96 h-fit fill-foreground absolute top-0 -translate-y-full" />
 
                 <div className="flex flex-col gap-5 items-center">
                     <div className="flex flex-col items-center">

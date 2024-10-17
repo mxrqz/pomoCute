@@ -20,20 +20,22 @@ export default function Home() {
   const [type, setType] = useState<"Video" | "Playlist">()
   const [URL, setURL] = useState<string>()
   const [autoplay, setAutoplay] = useState<boolean>()
+  const [index, setIndex] = useState<number>()
 
   const handleSelectedTime = (selectedTime: { timer: number; break: number, cycles: number, longBreak: number }) => {
     setTimer(selectedTime)
   }
 
-  const handleSettings = (settings: { mediaType: "Video" | "Playlist", URL: string, autoplay: boolean }) => {
+  const handleSettings = (settings: { mediaType: "Video" | "Playlist", URL: string, autoplay: boolean, index: number }) => {
     setType(settings.mediaType)
     setURL(settings.URL)
     setAutoplay(settings.autoplay)
+    setIndex(settings.index)
   }
 
   return (
     <>
-      <nav className="flex items-center justify-between py-5 sm:px12 lg:px-32 2xl:px-64">
+      <nav className="flex items-center justify-between py-2 sm:px12 lg:px-32 2xl:px-64">
         <h2 className="text-3xl font-semibold tracking-tight">PomoCute</h2>
 
         <div className="inline-flex gap-5">
@@ -46,8 +48,8 @@ export default function Home() {
         <div className="w-full flex flex-col gap-5">
           <Pomodoro selectedTime={handleSelectedTime} />
 
-          {type && URL && autoplay && (
-            <YtIframe videoURL={URL} playlist={type === "Playlist"} autoplay={autoplay} index={0} />
+          {type && URL && autoplay && index && (
+            <YtIframe videoURL={URL} playlist={type === "Playlist"} autoplay={autoplay} index={index} />
           )}
         </div>
 

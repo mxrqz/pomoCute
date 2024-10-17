@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 // import { Checkbox } from "./ui/checkbox";
 
 interface SettingsProps {
-    settings: (settings: { mediaType: "Video" | "Playlist", URL: string, autoplay: boolean }) => void
+    settings: (settings: { mediaType: "Video" | "Playlist", URL: string, autoplay: boolean, index: number }) => void
 }
 
 export default function Settings({ settings }: SettingsProps) {
@@ -27,7 +27,7 @@ export default function Settings({ settings }: SettingsProps) {
             setIndex(0)
             setAutoplay(true)
 
-            settings({ mediaType: "Video", URL: "https://youtu.be/ryDEN4vzzGg", autoplay: true });
+            settings({ mediaType: "Video", URL: "https://youtu.be/ryDEN4vzzGg", autoplay: true, index: 0 });
             return
         }
 
@@ -37,13 +37,13 @@ export default function Settings({ settings }: SettingsProps) {
         setIndex(index)
         setAutoplay(autoplay)
 
-        settings({ mediaType: type, URL, autoplay });
+        settings({ mediaType: type, URL, autoplay, index });
     }, [settings]);
 
     const save = () => {
         if (!type || !URL || !autoplay) return
 
-        settings({ mediaType: type, URL, autoplay });
+        settings({ mediaType: type, URL, autoplay, index: 0 });
 
         const musicItems = { type, URL, autoplay, index };
         localStorage.setItem('music', JSON.stringify(musicItems));
