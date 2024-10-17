@@ -11,6 +11,7 @@ import Tasks from "@/components/tasks";
 import QuickNotes from "@/components/quick-notes";
 import Settings from "@/components/settings";
 import YtIframe from "@/components/ytIframe";
+import ChartLine from "@/components/chart-line";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -39,6 +40,7 @@ export default function Home() {
         <h2 className="text-3xl font-semibold tracking-tight">PomoCute</h2>
 
         <div className="inline-flex gap-5">
+          <ChartLine />
           <Settings settings={handleSettings} />
           <ModeToggle />
         </div>
@@ -48,7 +50,7 @@ export default function Home() {
         <div className="w-full flex flex-col gap-5">
           <Pomodoro selectedTime={handleSelectedTime} />
 
-          {type && URL && autoplay && index && (
+          {type && URL && autoplay && (
             <YtIframe videoURL={URL} playlist={type === "Playlist"} autoplay={autoplay} index={index} />
           )}
         </div>

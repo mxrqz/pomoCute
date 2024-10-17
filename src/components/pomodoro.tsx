@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-// import { Rubik_Mono_One, } from "next/font/google"
+import { Rubik_Mono_One, } from "next/font/google"
 import { Inter, Baloo_Paaji_2 } from "next/font/google"
 import { Clock, Coffee } from "lucide-react"
 
@@ -10,10 +10,10 @@ import { playBreakAudio, playFocusAudio } from "./sounds"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import Ears from "./ears"
 
-// const rubik = Rubik_Mono_One({
-//     weight: ['400'],
-//     subsets: ['latin']
-// })
+const rubik = Rubik_Mono_One({
+    weight: ['400'],
+    subsets: ['latin']
+})
 
 const baloo = Baloo_Paaji_2({ subsets: ['latin'] })
 
@@ -132,7 +132,7 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
                 <div className="flex flex-col gap-5 items-center">
                     <div className="flex flex-col items-center">
                         {/* ${rubik.className} */}
-                        <div className={`h-fit text-[6rem] 2xl:text-[12rem] leading-none font-mono  flex items-center text-center`}>
+                        <div className={`h-fit text-[6rem] 2xl:text-[12rem] leading-none font-mono ${rubik.className} flex items-center text-center`}>
                             <span>{minutes}</span>
                             <span>:</span>
                             <span>{seconds}</span>
@@ -179,6 +179,8 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
                         </SelectContent>
                     </Select>
                 </div>
+
+                {/* <span>{cycles}</span> */}
             </div>
         </div>
     )

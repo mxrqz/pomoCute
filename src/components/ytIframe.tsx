@@ -14,7 +14,7 @@ interface YtIframeProps {
     videoURL: string,
     playlist: boolean,
     autoplay: boolean,
-    index: number,
+    index: number | undefined,
     indexChange?: (playlistIndex: number) => void
 }
 
@@ -248,8 +248,8 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
                                 )}
 
                                 <div className="flex flex-col">
-                                    <span className="font-bold uppercase line-clamp-2">{musicDetails.title}</span>
-                                    <span className="font-semibold text-muted-foreground">{musicDetails.author}</span>
+                                    <span className="font-bold line-clamp-2">{musicDetails.title}</span>
+                                    <span className="font-semibold text-muted-foreground line-clamp-1">{musicDetails.author}</span>
                                 </div>
                             </div>
 
