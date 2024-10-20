@@ -8,24 +8,59 @@ import { Button } from "./ui/button";
 import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { type ChartConfig } from "@/components/ui/chart"
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
-// import { useState } from "react";
+import { useState } from "react";
 
-interface ChartData {
+interface PomodoroData {
     date: string,
     pomodoro: number
 }
 
-const dailyData = [
-    { date: "Sunday", pomodoro: 186 },
-    { date: "Monday", pomodoro: 305 },
-    { date: "Tursday", pomodoro: 237 },
-    { date: "Wednesday", pomodoro: 73 },
-    { date: "Friday", pomodoro: 209 },
-    { date: "Saturday", pomodoro: 214 },
-]
+interface Datas {
+    daily: PomodoroData[],
+    weekly: PomodoroData[],
+    monthly: PomodoroData[],
+    yearly: PomodoroData[]
+}
+
+const datas: Datas = {
+    daily: [
+        { date: "Sunday", pomodoro: 10 },
+        { date: "Monday", pomodoro: 12 },
+        { date: "Tuesday", pomodoro: 6 },
+        { date: "Wednesday", pomodoro: 7 },
+        { date: "Thursday", pomodoro: 5 },
+        { date: "Friday", pomodoro: 3 },
+        { date: "Saturday", pomodoro: 9 },
+    ],
+
+    weekly: [
+        { date: "Week 1", pomodoro: 10 },
+        { date: "Week 2", pomodoro: 12 },
+        { date: "Week 3", pomodoro: 5 },
+        { date: "Week 4", pomodoro: 7 },
+        { date: "Week 5", pomodoro: 3 },
+        { date: "Week 6", pomodoro: 9 },
+        { date: "Week 7", pomodoro: 6 },
+    ],
+
+    monthly: [
+        { date: "January", pomodoro: 10 },
+        { date: "Febraury", pomodoro: 12 },
+        { date: "March", pomodoro: 5 },
+        { date: "April", pomodoro: 7 },
+        { date: "May", pomodoro: 3 },
+        { date: "June", pomodoro: 9 },
+        { date: "July", pomodoro: 6 },
+    ],
+
+    yearly: [
+        { date: "2024", pomodoro: 10 },
+        { date: "2025", pomodoro: 12 },
+    ]
+}
 
 const chartConfig = {
     desktop: {
@@ -35,8 +70,11 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export default function ChartLine() {
-    // const [chartData, setChartData] = useState<ChartData[]>(dailyData)
-    const chartData: ChartData[] = dailyData
+    const [chartData, setChartData] = useState<PomodoroData[]>(datas["daily" as keyof Datas])
+
+    const changeChartData = (chart: string) => {
+        setChartData(datas[chart as keyof Datas])
+    }
 
     return (
         <Dialog>
@@ -47,11 +85,12 @@ export default function ChartLine() {
             </DialogTrigger>
 
             <DialogContent className="bg-foreground text-background dark:text-foreground dark:bg-background">
-                <Card className="bg-foreground text-background dark:text-foreground dark:bg-background">
+                <DialogTitle>Estastisticas de Pomodoro</DialogTitle>
+
+                <Card className="bg-foreground text-background dark:text-foreground dark:bg-background border-none">
                     <CardHeader>
-                        <CardTitle>Estastisticas de Pomodoro</CardTitle>
                         <CardDescription className="inline-flex">
-                            <ToggleGroup type="single" defaultValue="daily">
+                            <ToggleGroup type="single" defaultValue="daily" onValueChange={changeChartData}>
                                 <ToggleGroupItem value="daily">Daily</ToggleGroupItem>
                                 <ToggleGroupItem value="weekly">Weekly</ToggleGroupItem>
                                 <ToggleGroupItem value="monthly">Monthly</ToggleGroupItem>
@@ -73,7 +112,7 @@ export default function ChartLine() {
                             >
                                 <CartesianGrid vertical={false} />
                                 <XAxis
-                                    dataKey="month"
+                                    dataKey="date"
                                     tickLine={false}
                                     axisLine={false}
                                     tickMargin={8}
@@ -84,8 +123,8 @@ export default function ChartLine() {
                                     content={<ChartTooltipContent indicator="line" />}
                                 />
                                 <Line
-                                    dataKey="desktop"
-                                    type="natural"
+                                    dataKey="pomodoro"
+                                    type="linear"
                                     stroke="var(--color-desktop)"
                                     strokeWidth={2}
                                     dot={{
@@ -105,117 +144,13 @@ export default function ChartLine() {
                             </LineChart>
                         </ChartContainer>
                     </CardContent>
-                    <CardFooter className="flex-col items-start gap-2 text-sm">
-                        <div>footer</div>
-                    </CardFooter>
+
                 </Card>
+
+                <DialogFooter>
+                    Footer
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     )
 }
-
-// "use client"
-
-// import { TrendingUp } from "lucide-react"
-// import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts"
-
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardFooter,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card"
-// import {
-//   ChartConfig,
-//   ChartContainer,
-//   ChartTooltip,
-//   ChartTooltipContent,
-// } from "@/components/ui/chart"
-
-// export const description = "A line chart with a label"
-
-// const chartData = [
-//   { month: "January", desktop: 186, mobile: 80 },
-//   { month: "February", desktop: 305, mobile: 200 },
-//   { month: "March", desktop: 237, mobile: 120 },
-//   { month: "April", desktop: 73, mobile: 190 },
-//   { month: "May", desktop: 209, mobile: 130 },
-//   { month: "June", desktop: 214, mobile: 140 },
-// ]
-
-// const chartConfig = {
-//   desktop: {
-//     label: "Desktop",
-//     color: "hsl(var(--chart-1))",
-//   },
-//   mobile: {
-//     label: "Mobile",
-//     color: "hsl(var(--chart-2))",
-//   },
-// } satisfies ChartConfig
-
-// export function Component() {
-//   return (
-//     <Card>
-//       <CardHeader>
-//         <CardTitle>Line Chart - Label</CardTitle>
-//         <CardDescription>January - June 2024</CardDescription>
-//       </CardHeader>
-//       <CardContent>
-//         <ChartContainer config={chartConfig}>
-//           <LineChart
-//             accessibilityLayer
-//             data={chartData}
-//             margin={{
-//               top: 20,
-//               left: 12,
-//               right: 12,
-//             }}
-//           >
-//             <CartesianGrid vertical={false} />
-//             <XAxis
-//               dataKey="month"
-//               tickLine={false}
-//               axisLine={false}
-//               tickMargin={8}
-//               tickFormatter={(value) => value.slice(0, 3)}
-//             />
-//             <ChartTooltip
-//               cursor={false}
-//               content={<ChartTooltipContent indicator="line" />}
-//             />
-//             <Line
-//               dataKey="desktop"
-//               type="natural"
-//               stroke="var(--color-desktop)"
-//               strokeWidth={2}
-//               dot={{
-//                 fill: "var(--color-desktop)",
-//               }}
-//               activeDot={{
-//                 r: 6,
-//               }}
-//             >
-//               <LabelList
-//                 position="top"
-//                 offset={12}
-//                 className="fill-foreground"
-//                 fontSize={12}
-//               />
-//             </Line>
-//           </LineChart>
-//         </ChartContainer>
-//       </CardContent>
-//       <CardFooter className="flex-col items-start gap-2 text-sm">
-//         <div className="flex gap-2 font-medium leading-none">
-//           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-//         </div>
-//         <div className="leading-none text-muted-foreground">
-//           Showing total visitors for the last 6 months
-//         </div>
-//       </CardFooter>
-//     </Card>
-//   )
-// }
