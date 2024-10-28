@@ -5,11 +5,11 @@ import { Button } from "./ui/button";
 // import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 // import { TrendingUp } from "lucide-react"
-import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { type ChartConfig } from "@/components/ui/chart"
+import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { type ChartConfig } from "@/components/ui/chart";
 import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { useState } from "react";
 
