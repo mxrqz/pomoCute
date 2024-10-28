@@ -21,6 +21,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 interface Pomodoro {
     selectedTime: (selectedTimer: { timer: number; break: number, cycles: number, longBreak: number }) => void;
+    cyclesChange: (cycle: number) => void;
+    isPomodoroActive: (isActive: boolean) => void
 }
 
 const classic = {
@@ -60,7 +62,7 @@ const timers: Record<TimerOptions, { timer: number, break: number, cycles: numbe
     extended: extended
 }
 
-export default function Pomodoro({ selectedTime }: Pomodoro) {
+export default function Pomodoro({ selectedTime, cyclesChange, isPomodoroActive }: Pomodoro) {
     const [selectedTimer, setSelectedTimer] = useState<{ timer: number, break: number, cycles: number, longBreak: number }>(classic)
     const [timeLeft, setTimeLeft] = useState<number>(selectedTimer.timer * 60)
     const [isActive, setIsActive] = useState<boolean>(false)
@@ -124,6 +126,14 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
         selectedTime(selectedTimer);
     }, [selectedTime, selectedTimer])
 
+    useEffect(() => {
+        cyclesChange(cycles)
+    }, [cycles, cyclesChange])
+
+    useEffect(() => {
+        isPomodoroActive(isActive)
+    }, [isActive, isPomodoroActive])
+
     return (
         <div className="flex justify-center 2xl:gap-10">
             <div className="flex flex-col gap-5 items-center relative h-fit">
@@ -131,7 +141,6 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
 
                 <div className="flex flex-col gap-5 items-center">
                     <div className="flex flex-col items-center">
-                        {/* ${rubik.className} */}
                         <div className={`h-fit text-[6rem] 2xl:text-[12rem] leading-none font-mono ${rubik.className} flex items-center text-center`}>
                             <span>{minutes}</span>
                             <span>:</span>
@@ -179,8 +188,6 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
                         </SelectContent>
                     </Select>
                 </div>
-
-                {/* <span>{cycles}</span> */}
             </div>
         </div>
     )

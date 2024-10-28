@@ -1,12 +1,81 @@
+import { useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Progress } from "./ui/progress";
 
-const currentLevel = 4
-const currentXp = 10
-const xpToNextLevel = Math.floor(100 * Math.pow(1.2, currentLevel - 1))
+// Para cada minuto de Pomodoro rodando +1 ponto
+// Para cada ciclo finalizado +10 pontos
+// Para cada tarefa finalizada +1 ponto
 
-export default function UserExp() {
+// Streaks
+//  1 dia - 1x
+//  2 dias - 2x
+// 3 dias - 3x
+// 4 dias - 4x
+// 5 dias - 5x
 
+const xpPerMinute = 3
+const xpPerCycle = 25
+
+interface UserExp {
+    isActive: boolean,
+    cycles: number
+}
+
+export default function UserExp({ isActive, cycles }: UserExp) {
+    const [currentLevel, setCurrentLevel] = useState<number>(1);
+    const [currentXp, setCurrentXp] = useState<number>(0);
+    const xpToNextLevel = Math.floor(100 * Math.pow(1.2, currentLevel - 1));
+    const [isInitialized, setIsInitialized] = useState<boolean>(false)
+    const [currentCycle, setCurrentCycle] = useState<number>(0)
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+
+        if (isActive) {
+            interval = setInterval(() => {
+                setCurrentXp(prevXp => prevXp + xpPerMinute);
+            }, 1000 * 60 * 1);
+        }
+
+        if (currentCycle !== cycles) {
+            setCurrentXp(prevXp => prevXp + xpPerCycle)
+            setCurrentCycle(cycles)
+        }
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [isActive, cycles, xpToNextLevel, currentCycle]);
+
+    useEffect(() => {
+        if (currentXp >= xpToNextLevel) {
+            setCurrentXp(0)
+            setCurrentLevel(level => level + 1)
+        }
+    }, [currentXp, xpToNextLevel])
+
+    useEffect(() => {
+        if (!isInitialized) return
+        const stringfy = JSON.stringify({ currentXp, currentLevel })
+        localStorage.setItem('xpAndLevel', stringfy)
+    }, [currentXp, currentLevel, isInitialized])
+
+    useEffect(() => {
+        const getXpAndLevel = () => {
+            const xpAndLevel = localStorage.getItem('xpAndLevel')
+            if (!xpAndLevel) {
+                setIsInitialized(true)
+                return
+            }
+            const { currentXp, currentLevel } = JSON.parse(xpAndLevel)
+            
+            setCurrentLevel(currentLevel)
+            setCurrentXp(currentXp)
+            setIsInitialized(true)
+        }
+
+        getXpAndLevel()
+    }, [])
 
 
     return (

@@ -23,11 +23,11 @@ export default function Settings({ settings }: SettingsProps) {
         const musicItems = localStorage.getItem('music');
         if (!musicItems) {
             setType("Video");
-            setURL("https://youtu.be/ryDEN4vzzGg")
+            setURL("https://www.youtube.com/watch?v=jfKfPfyJRdk")
             setIndex(0)
             setAutoplay(true)
 
-            settings({ mediaType: "Video", URL: "https://youtu.be/ryDEN4vzzGg", autoplay: true, index: 0 });
+            settings({ mediaType: "Video", URL: "https://www.youtube.com/watch?v=jfKfPfyJRdk", autoplay: true, index: 0 });
             return
         }
 

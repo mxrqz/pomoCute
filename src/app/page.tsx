@@ -35,6 +35,17 @@ export default function Home() {
     setIndex(settings.index)
   }
 
+  const [cycles, setCycles] = useState<number>(0)
+  const [isActive, setIsActive] = useState<boolean>(false)
+
+  const handleCycles = (cycles: number) => {
+    setCycles(cycles)
+  }
+
+  const handleIsActive = (isActive: boolean) => {
+    setIsActive(isActive)
+  }
+
   return (
     <>
       <nav className="flex items-center justify-between py-2 sm:px12 lg:px-32 2xl:px-64">
@@ -45,17 +56,17 @@ export default function Home() {
           <Settings settings={handleSettings} />
           <ModeToggle />
 
-          <UserExp />
+          <UserExp isActive={isActive} cycles={cycles} />
         </div>
       </nav>
 
       <section className="w-full h-full overflow-hidden flex items-center justify-between gap-10 py-5 sm:px12 lg:px-32 2xl:px-64">
         <div className="w-full flex flex-col gap-5">
-          <Pomodoro selectedTime={handleSelectedTime} />
+          <Pomodoro selectedTime={handleSelectedTime} cyclesChange={handleCycles} isPomodoroActive={handleIsActive} />
 
-          {/* {type && URL && autoplay && (
+          {type && URL && autoplay && (
             <YtIframe videoURL={URL} playlist={type === "Playlist"} autoplay={autoplay} index={index} />
-          )} */}
+          )}
         </div>
 
         <Separator orientation="vertical" />
