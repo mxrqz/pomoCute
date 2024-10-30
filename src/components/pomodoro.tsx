@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Rubik_Mono_One, } from "next/font/google"
-import { Inter, Baloo_Paaji_2 } from "next/font/google"
+import { Baloo_Paaji_2 } from "next/font/google"
 import { Clock, Coffee } from "lucide-react"
 
 import { Button } from "./ui/button"
@@ -15,9 +15,7 @@ const rubik = Rubik_Mono_One({
     subsets: ['latin']
 })
 
-const baloo = Baloo_Paaji_2({ subsets: ['latin'] })
-
-const inter = Inter({ subsets: ['latin'] })
+const baloo = Baloo_Paaji_2({ subsets: ['latin'], display: 'swap' })
 
 interface Pomodoro {
     selectedTime: (selectedTimer: { timer: number; break: number, cycles: number, longBreak: number }) => void;
@@ -150,13 +148,13 @@ export default function Pomodoro({ selectedTime, cyclesChange, isPomodoroActive 
                         <span className={`text-2xl 2xl:text-5xl text-muted-foreground font-medium ${baloo.className}`}>{isBreak ? 'Momento de Pausa' : 'Momento de Foco'}</span>
                     </div>
 
-                    <div className={`flex items-center gap-5 text-sm 2xl:text-lg text-muted-foreground ${inter.className}`}>
-                        <span className="inline-flex items-center gap-1">
+                    <div className={`flex items-center gap-5 text-sm 2xl:text-lg text-muted-foreground`}>
+                        <span className={`inline-flex items-center gap-1`}>
                             <Clock size={24} />
                             Ciclo {cycles} de {selectedTimer.cycles}
                         </span>
 
-                        <span className="inline-flex items-center gap-1">
+                        <span className={`inline-flex items-center gap-1`}>
                             <Coffee size={24} />
                             Proxima pausa: {cycles + 1 === selectedTimer.cycles ? `${selectedTimer.longBreak} minutos` : `${selectedTimer.break} minutos`}
                         </span>

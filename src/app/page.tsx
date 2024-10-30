@@ -3,37 +3,39 @@
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import Pomodoro from "@/components/pomodoro";
 
-import { Inter } from "next/font/google"
 import { Clock } from "lucide-react";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import Tasks from "@/components/tasks";
 import QuickNotes from "@/components/quick-notes";
-import Settings from "@/components/settings";
+// import Settings from "@/components/settings";
 import YtIframe from "@/components/ytIframe";
 import ChartLine from "@/components/chart-line";
 import UserExp from "@/components/user-exp";
 
-const inter = Inter({ subsets: ['latin'] })
+const type = "Video"
+const URL = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
+const autoplay = true
+const index = 0
 
 export default function Home() {
   const [timer, setTimer] = useState<{ timer: number; break: number, cycles: number, longBreak: number }>()
 
-  const [type, setType] = useState<"Video" | "Playlist">()
-  const [URL, setURL] = useState<string>()
-  const [autoplay, setAutoplay] = useState<boolean>()
-  const [index, setIndex] = useState<number>()
+  // const [type, setType] = useState<"Video" | "Playlist">("Video")
+  // const [URL, setURL] = useState<string>("https://www.youtube.com/watch?v=jfKfPfyJRdk")
+  // const [autoplay, setAutoplay] = useState<boolean>(true)
+  // const [index, setIndex] = useState<number>(0)
 
   const handleSelectedTime = (selectedTime: { timer: number; break: number, cycles: number, longBreak: number }) => {
     setTimer(selectedTime)
   }
 
-  const handleSettings = (settings: { mediaType: "Video" | "Playlist", URL: string, autoplay: boolean, index: number }) => {
-    setType(settings.mediaType)
-    setURL(settings.URL)
-    setAutoplay(settings.autoplay)
-    setIndex(settings.index)
-  }
+  // const handleSettings = (settings: { mediaType: "Video" | "Playlist", URL: string, autoplay: boolean | undefined, index: number }) => {
+  //   setType(settings.mediaType)
+  //   setURL(settings.URL)
+  //   setAutoplay(settings.autoplay)
+  //   setIndex(settings.index)
+  // }
 
   const [cycles, setCycles] = useState<number>(0)
   const [isActive, setIsActive] = useState<boolean>(false)
@@ -53,7 +55,7 @@ export default function Home() {
 
         <div className="inline-flex gap-5">
           <ChartLine />
-          <Settings settings={handleSettings} />
+          {/* <Settings settings={handleSettings} /> */}
           <ModeToggle />
 
           <UserExp isActive={isActive} cycles={cycles} />
@@ -64,8 +66,8 @@ export default function Home() {
         <div className="w-full flex flex-col gap-5">
           <Pomodoro selectedTime={handleSelectedTime} cyclesChange={handleCycles} isPomodoroActive={handleIsActive} />
 
-          {type && URL && autoplay && (
-            <YtIframe videoURL={URL} playlist={type === "Playlist"} autoplay={autoplay} index={index} />
+          {type && URL && (
+            <YtIframe videoURL={URL} playlist={false} autoplay={autoplay} index={index} />
           )}
         </div>
 
@@ -80,7 +82,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className={`w-full flex flex-col justify-center items-center bg-foreground/10 text-muted-foreground py-5 sm:px12 lg:px-32 2xl:px-64 ${inter.className}`}>
+      <footer className={`w-full flex flex-col justify-center items-center bg-foreground/10 text-muted-foreground py-5 sm:px12 lg:px-32 2xl:px-64`}>
         <span>Mantenha o foco e aumente sua produtividade com a Técnica Pomodoro.</span>
         <span className="inline-flex">
           <Clock className="mr-2" />

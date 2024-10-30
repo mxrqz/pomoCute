@@ -7,8 +7,8 @@ import { Progress } from "./ui/progress";
 // Para cada tarefa finalizada +1 ponto
 
 // Streaks
-//  1 dia - 1x
-//  2 dias - 2x
+// 1 dia - 1x
+// 2 dias - 2x
 // 3 dias - 3x
 // 4 dias - 4x
 // 5 dias - 5x

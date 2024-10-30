@@ -13,7 +13,7 @@ import { Progress } from "./ui/progress";
 interface YtIframeProps {
     videoURL: string,
     playlist: boolean,
-    autoplay: boolean,
+    autoplay: boolean | undefined,
     index: number | undefined,
     indexChange?: (playlistIndex: number) => void
 }
@@ -38,8 +38,8 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
 
         if (playlist && playlistMatch) {
             return playlistMatch[1];
-        } 
-        
+        }
+
         if (!playlist && videoMatch) {
             return videoMatch[1];
         }
@@ -93,21 +93,31 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
                     onStateChange: onPlayerStateChange,
                 },
                 playerVars: {
-                    autoplay: autoplay ? 1 : 0,
-                    controls: 1,
+                    controls: 0,
+                    rel: 0,
+                    disablekb: 1,
+                    enablejsapi: 1
                 }
             });
         };
 
         const onPlayerReady = (event: any) => {
-            if (playlist) {
+            if (playlist && autoplay) {
                 event.target.loadPlaylist({
                     list: id,
                     listType: 'playlist',
                     index
                 });
-            } else {
+            } else if (!playlist && autoplay) {
                 event.target.loadVideoById(id);
+            } else if (playlist && !autoplay) {
+                event.target.cuePlaylist({
+                    list: id,
+                    listType: 'playlist',
+                    index
+                });
+            } else if (!playlist && !autoplay) {
+                event.target.cueVideoById(id);
             }
 
             if (soundMuted) {
@@ -159,7 +169,7 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
                 clearInterval(interval); // Interromper o intervalo caso o vídeo seja pausado ou tenha terminado
             }
         };
-        
+
         const saveIndex = (newIndex: number) => {
             const musicItems = { type: playlist ? "Playlist" : "Video", URL: videoURL, autoplay, index: newIndex };
             localStorage.setItem('music', JSON.stringify(musicItems));
@@ -195,15 +205,19 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
         }
     }, [soundMuted])
 
-    useEffect(() => {
+    const play = () => {
         if (!youtubePlayer.current) return
+        youtubePlayer.current.playVideo()
 
-        if (isPaused) {
-            youtubePlayer.current.pauseVideo()
-        } else {
-            youtubePlayer.current.playVideo()
-        }
-    }, [isPaused])
+        setIsPaused(false)
+    }
+
+    const pause = () => {
+        if (!youtubePlayer.current) return
+        youtubePlayer.current.pauseVideo()
+
+        setIsPaused(true)
+    }
 
     useEffect(() => {
         if (!youtubePlayer.current) return
@@ -214,7 +228,7 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
         <>
             <Script src="https://www.youtube.com/iframe_api" />
 
-            <div className="flex flex-col gap-10 w-full overflow-hidden">
+            <div className="flex flex-col gap-10 w-full relative">
                 <div className="flex flex-col gap-5 justify-between w-full">
                     <div className="inline-flex items-center gap-2 w-fit">
                         <Label htmlFor="volume-slider" className="flex items-center gap-2">
@@ -237,20 +251,24 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
                     </div>
 
                     {musicDetails && (
-                        <div className="flex flex-col gap-5">
-                            <div className="flex gap-5">
-                                {/* <Music size={48} /> */}
+                        <div className="flex flex-col gap-5 w-full">
+                            <div className="inline-flex">
+                                <div className="flex gap-5 w-full">
+                                    {/* <Music size={48} /> */}
 
-                                {isPaused ? (
-                                    <Play size={48} onClick={() => setIsPaused(false)} cursor={"pointer"} className="shrink-0" />
-                                ) : (
-                                    <Pause size={48} onClick={() => setIsPaused(true)} cursor={"pointer"} className="shrink-0" />
-                                )}
+                                    {isPaused ? (
+                                        <Play size={48} onClick={play} cursor={"pointer"} className="shrink-0" />
+                                    ) : (
+                                        <Pause size={48} onClick={pause} cursor={"pointer"} className="shrink-0" />
+                                    )}
 
-                                <div className="flex flex-col">
-                                    <span className="font-bold line-clamp-2">{musicDetails.title}</span>
-                                    <span className="font-semibold text-muted-foreground line-clamp-1">{musicDetails.author}</span>
+                                    <div className="flex flex-col">
+                                        <span className="font-bold line-clamp-2">{musicDetails.title}</span>
+                                        <span className="font-semibold text-muted-foreground line-clamp-1">{musicDetails.author}</span>
+                                    </div>
                                 </div>
+
+                                <div className="w-[130px] h-[75px] rounded-md" ref={playerRef} />
                             </div>
 
                             <div className="flex flex-col gap-1">
@@ -283,8 +301,6 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
                         </div>
                     )}
                 </div>
-
-                <div className="h-24 w-full hidden" ref={playerRef} />
             </div>
         </>
     )
