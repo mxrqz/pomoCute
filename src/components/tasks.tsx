@@ -19,6 +19,7 @@ export default function Tasks() {
     const [tasks, setTasks] = useState<Tasks[]>([]);
     const input = useRef<HTMLInputElement>(null)
     const lastTaskRef = useRef<HTMLLIElement>(null)
+    const [isInitialized, setIsInitialized] = useState<boolean>(false)
 
     const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.code === 'Enter') {
@@ -54,7 +55,9 @@ export default function Tasks() {
         const storedTasks = localStorage.getItem('tasks');
         if (storedTasks) {
             setTasks(JSON.parse(storedTasks));
-        }
+        } 
+
+        setIsInitialized(true)
     }, []);
 
     useEffect(() => {
@@ -64,12 +67,14 @@ export default function Tasks() {
     }, [tasks]);
 
     useEffect(() => {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }, [tasks]);
+        if (isInitialized) {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+    }, [tasks, isInitialized]);
 
     return (
         <div className="w-full h-full flex flex-col gap-10 items-center p-0 overflow-hidden">
-            <h3 className="text-3xl font-semibold">Tarefa Diárias</h3>
+            <h3 className="text-3xl font-semibold">Tarefas Diárias</h3>
 
             <div className="w-full h-full flex flex-col gap-2 justify-between overflow-hidden">
                 <ScrollArea className="w-full">

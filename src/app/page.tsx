@@ -12,6 +12,7 @@ import QuickNotes from "@/components/quick-notes";
 import YtIframe from "@/components/ytIframe";
 import ChartLine from "@/components/chart-line";
 import UserExp from "@/components/user-exp";
+import { PomodoroProvider } from "@/components/PomodoroProvider";
 
 const type = "Video"
 const URL = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
@@ -37,50 +38,53 @@ export default function Home() {
   //   setIndex(settings.index)
   // }
 
-  const [cycles, setCycles] = useState<number>(0)
-  const [isActive, setIsActive] = useState<boolean>(false)
+  // const [cycles, setCycles] = useState<number>(0)
+  // const [isActive, setIsActive] = useState<boolean>(false)
 
-  const handleCycles = (cycles: number) => {
-    setCycles(cycles)
-  }
+  // const handleCycles = (cycles: number) => {
+  //   setCycles(cycles)
+  // }
 
-  const handleIsActive = (isActive: boolean) => {
-    setIsActive(isActive)
-  }
+  // const handleIsActive = (isActive: boolean) => {
+  //   setIsActive(isActive)
+  // }
 
   return (
     <>
-      <nav className="flex items-center justify-between py-2 sm:px12 lg:px-32 2xl:px-64">
-        <h2 className="text-3xl font-semibold tracking-tight">PomoCute</h2>
+      <PomodoroProvider>
+        <nav className="flex items-center justify-between py-2 sm:px12 lg:px-32 2xl:px-64">
+          <h2 className="text-3xl font-semibold tracking-tight">PomoCute</h2>
 
-        <div className="inline-flex gap-5">
-          <ChartLine />
-          {/* <Settings settings={handleSettings} /> */}
-          <ModeToggle />
+          <div className="inline-flex gap-5">
+            <ChartLine />
+            {/* <Settings settings={handleSettings} /> */}
+            <ModeToggle />
 
-          <UserExp isActive={isActive} cycles={cycles} />
-        </div>
-      </nav>
+            <UserExp />
+          </div>
+        </nav>
 
-      <section className="w-full h-full overflow-hidden flex items-center justify-between gap-10 py-5 sm:px12 lg:px-32 2xl:px-64">
-        <div className="w-full flex flex-col gap-5">
-          <Pomodoro selectedTime={handleSelectedTime} cyclesChange={handleCycles} isPomodoroActive={handleIsActive} />
+        <section className="w-full h-full overflow-hidden flex justify-between gap-10 py-5 sm:px12 lg:px-32 2xl:px-64">
+          <div className="w-full flex flex-col gap-10">
+            <Pomodoro selectedTime={handleSelectedTime} />
 
-          {type && URL && (
-            <YtIframe videoURL={URL} playlist={false} autoplay={autoplay} index={index} />
-          )}
-        </div>
+            {type && URL && (
+              <YtIframe videoURL={URL} playlist={false} autoplay={autoplay} index={index} />
+            )}
+          </div>
 
-        <Separator orientation="vertical" />
+          <Separator orientation="vertical" />
 
-        <div className="w-full h-full grid grid-rows-[1fr,2px,1fr] overflow-hidden gap-10">
-          <Tasks />
+          <div className="w-full h-full grid grid-rows-[1fr,2px,1fr] overflow-hidden gap-10">
+            <Tasks />
 
-          <Separator />
+            <Separator />
 
-          <QuickNotes />
-        </div>
-      </section>
+            <QuickNotes />
+          </div>
+        </section>
+      </PomodoroProvider>
+
 
       <footer className={`w-full flex flex-col justify-center items-center bg-foreground/10 text-muted-foreground py-5 sm:px12 lg:px-32 2xl:px-64`}>
         <span>Mantenha o foco e aumente sua produtividade com a Técnica Pomodoro.</span>

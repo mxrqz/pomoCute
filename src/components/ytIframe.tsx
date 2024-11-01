@@ -56,14 +56,14 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
     const [volume, setVolume] = useState<number>(33)
 
     const [musicDetails, setMusicDetails] = useState<MusicDetails>({
-        title: "Carregando...",
+        title: "Pressione Play para iniciar",
         currentTime: 0,
         duration: 0,
         isLive: false,
-        author: "Carregando..."
+        author: ""
     });
 
-    const [isPaused, setIsPaused] = useState<boolean>(false)
+    const [isPaused, setIsPaused] = useState<boolean>(true)
 
     const hours = (currentTime: number) => {
         return Math.floor(currentTime / 3600);
@@ -102,23 +102,7 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
         };
 
         const onPlayerReady = (event: any) => {
-            if (playlist && autoplay) {
-                event.target.loadPlaylist({
-                    list: id,
-                    listType: 'playlist',
-                    index
-                });
-            } else if (!playlist && autoplay) {
-                event.target.loadVideoById(id);
-            } else if (playlist && !autoplay) {
-                event.target.cuePlaylist({
-                    list: id,
-                    listType: 'playlist',
-                    index
-                });
-            } else if (!playlist && !autoplay) {
-                event.target.cueVideoById(id);
-            }
+            event.target.cueVideoById(id);
 
             if (soundMuted) {
                 event.target.mute();
@@ -228,80 +212,78 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
         <>
             <Script src="https://www.youtube.com/iframe_api" />
 
-            <div className="flex flex-col gap-10 w-full relative">
-                <div className="flex flex-col gap-5 justify-between w-full">
-                    <div className="inline-flex items-center gap-2 w-fit">
-                        <Label htmlFor="volume-slider" className="flex items-center gap-2">
-                            <Toggle className="p-2"
-                                onClick={(e) => e.stopPropagation()}
-                                onPressedChange={setSoundMuted}
-                                aria-label="Toggle Sound"
-                            >
-                                {soundMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                            </Toggle>
-                            <span className="sr-only">Volume slider</span>
-                        </Label>
 
-                        <Slider id="volume-slider" className="w-32"
-                            onValueChange={(e) => setVolume(e[0])}
-                            defaultValue={[33]}
-                            max={100}
-                            step={1}
-                        />
-                    </div>
+            {musicDetails && (
+                <div className="flex flex-col gap-5 w-full">
+                    <div className="inline-flex items-start">
+                        <div className="flex gap-5 w-full">
+                            {/* <Music size={48} /> */}
 
-                    {musicDetails && (
-                        <div className="flex flex-col gap-5 w-full">
-                            <div className="inline-flex">
-                                <div className="flex gap-5 w-full">
-                                    {/* <Music size={48} /> */}
+                            {isPaused ? (
+                                <Play size={48} onClick={play} cursor={"pointer"} className="shrink-0" />
+                            ) : (
+                                <Pause size={48} onClick={pause} cursor={"pointer"} className="shrink-0" />
+                            )}
 
-                                    {isPaused ? (
-                                        <Play size={48} onClick={play} cursor={"pointer"} className="shrink-0" />
-                                    ) : (
-                                        <Pause size={48} onClick={pause} cursor={"pointer"} className="shrink-0" />
-                                    )}
-
-                                    <div className="flex flex-col">
-                                        <span className="font-bold line-clamp-2">{musicDetails.title}</span>
-                                        <span className="font-semibold text-muted-foreground line-clamp-1">{musicDetails.author}</span>
-                                    </div>
-                                </div>
-
-                                <div className="w-[130px] h-[75px] rounded-md" ref={playerRef} />
-                            </div>
-
-                            <div className="flex flex-col gap-1">
-                                <Progress value={Math.round((musicDetails.currentTime / musicDetails.duration) * 100)} max={100} />
-
-                                <div className="inline-flex justify-between">
-                                    <div className="inline-flex">
-                                        <span>{String(hours(musicDetails.currentTime)).padStart(2, '0')}</span>
-                                        <span>:</span>
-                                        <span>{String(minutes(musicDetails.currentTime)).padStart(2, '0')}</span>
-                                        <span>:</span>
-                                        <span>{String(seconds(musicDetails.currentTime)).padStart(2, '0')}</span>
-                                    </div>
-
-                                    <div className="inline-flex">
-                                        {musicDetails.isLive ? (
-                                            <span>LiveStream</span>
-                                        ) : (
-                                            <>
-                                                <span>{String(hours(musicDetails.duration)).padStart(2, '0')}</span>
-                                                <span>:</span>
-                                                <span>{String(minutes(musicDetails.duration)).padStart(2, '0')}</span>
-                                                <span>:</span>
-                                                <span>{String(seconds(musicDetails.duration)).padStart(2, '0')}</span>
-                                            </>
-                                        )}
-                                    </div>
-                                </div>
+                            <div className="flex flex-col">
+                                <span className="font-bold line-clamp-2">{musicDetails.title}</span>
+                                <span className="font-semibold text-muted-foreground line-clamp-1">{musicDetails.author}</span>
                             </div>
                         </div>
-                    )}
+
+                        <div className="w-[130px] h-[75px] rounded-md hidden" ref={playerRef} />
+
+                        <div className="inline-flex items-center gap-2 w-fit">
+                            <Label htmlFor="volume-slider" className="flex items-center gap-2">
+                                <Toggle className="p-2"
+                                    onClick={(e) => e.stopPropagation()}
+                                    onPressedChange={setSoundMuted}
+                                    aria-label="Toggle Sound"
+                                >
+                                    {soundMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                                </Toggle>
+                                <span className="sr-only">Volume slider</span>
+                            </Label>
+
+                            <Slider id="volume-slider" className="w-32"
+                                onValueChange={(e) => setVolume(e[0])}
+                                defaultValue={[33]}
+                                max={100}
+                                step={1}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                        <Progress value={Math.round((musicDetails.currentTime / musicDetails.duration) * 100)} max={100} />
+
+                        <div className="inline-flex justify-between">
+                            <div className="inline-flex">
+                                <span>{String(hours(musicDetails.currentTime)).padStart(2, '0')}</span>
+                                <span>:</span>
+                                <span>{String(minutes(musicDetails.currentTime)).padStart(2, '0')}</span>
+                                <span>:</span>
+                                <span>{String(seconds(musicDetails.currentTime)).padStart(2, '0')}</span>
+                            </div>
+
+                            <div className="inline-flex">
+                                {musicDetails.isLive ? (
+                                    <span>LiveStream</span>
+                                ) : (
+                                    <>
+                                        <span>{String(hours(musicDetails.duration)).padStart(2, '0')}</span>
+                                        <span>:</span>
+                                        <span>{String(minutes(musicDetails.duration)).padStart(2, '0')}</span>
+                                        <span>:</span>
+                                        <span>{String(seconds(musicDetails.duration)).padStart(2, '0')}</span>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            )}
+
         </>
     )
 }

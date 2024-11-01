@@ -1,9 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState} from "react"
 import { Rubik_Mono_One, } from "next/font/google"
 import { Baloo_Paaji_2 } from "next/font/google"
 import { Clock, Coffee } from "lucide-react"
+
+import { usePomodoro } from "./PomodoroProvider"
 
 import { Button } from "./ui/button"
 import { playBreakAudio, playFocusAudio } from "./sounds"
@@ -19,8 +21,8 @@ const baloo = Baloo_Paaji_2({ subsets: ['latin'], display: 'swap' })
 
 interface Pomodoro {
     selectedTime: (selectedTimer: { timer: number; break: number, cycles: number, longBreak: number }) => void;
-    cyclesChange: (cycle: number) => void;
-    isPomodoroActive: (isActive: boolean) => void
+    // cyclesChange: (cycle: number) => void;
+    // isPomodoroActive: (isActive: boolean) => void
 }
 
 const classic = {
@@ -60,15 +62,17 @@ const timers: Record<TimerOptions, { timer: number, break: number, cycles: numbe
     extended: extended
 }
 
-export default function Pomodoro({ selectedTime, cyclesChange, isPomodoroActive }: Pomodoro) {
+export default function Pomodoro({ selectedTime }: Pomodoro) {
     const [selectedTimer, setSelectedTimer] = useState<{ timer: number, break: number, cycles: number, longBreak: number }>(classic)
     const [timeLeft, setTimeLeft] = useState<number>(selectedTimer.timer * 60)
-    const [isActive, setIsActive] = useState<boolean>(false)
+    // const [isActive, setIsActive] = useState<boolean>(false)
     const [isBreak, setIsBreak] = useState<boolean>(false)
-    const [cycles, setCycles] = useState<number>(0)
+    // const [cycles, setCycles] = useState<number>(0)
 
     const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0')
     const seconds = String(timeLeft % 60).padStart(2, '0')
+
+    const { setIsActive, setCycles, cycles, isActive } = usePomodoro();
 
     const startTimer = () => {
         playFocusAudio()
@@ -97,7 +101,7 @@ export default function Pomodoro({ selectedTime, cyclesChange, isPomodoroActive 
             clearInterval(interval)
 
             if (!isBreak) {
-                setCycles(prevCycle => prevCycle + 1)
+                setCycles(cycles + 1)
                 if (cycles + 1 === selectedTimer.cycles) {
                     setIsBreak(true)
                     setTimeLeft(selectedTimer.longBreak * 60)
@@ -117,29 +121,21 @@ export default function Pomodoro({ selectedTime, cyclesChange, isPomodoroActive 
         }
 
         return () => clearInterval(interval)
-    }, [isActive, timeLeft, isBreak, cycles, selectedTimer])
+    }, [isActive, timeLeft, isBreak, cycles, selectedTimer, setCycles])
 
     useEffect(() => {
         setTimeLeft(selectedTimer.timer * 60)
         selectedTime(selectedTimer);
     }, [selectedTime, selectedTimer])
 
-    useEffect(() => {
-        cyclesChange(cycles)
-    }, [cycles, cyclesChange])
-
-    useEffect(() => {
-        isPomodoroActive(isActive)
-    }, [isActive, isPomodoroActive])
-
     return (
         <div className="flex justify-center 2xl:gap-10">
-            <div className="flex flex-col gap-5 items-center relative h-fit">
-                <Ears className="w-32 2xl:w-96 h-fit fill-foreground absolute top-0 -translate-y-full" />
+            <div className="flex flex-col gap-5 items-center relative ">
+                <Ears className="w-32 2xl:w-96 h-fit fill-foreground" />
 
                 <div className="flex flex-col gap-5 items-center">
                     <div className="flex flex-col items-center">
-                        <div className={`h-fit text-[6rem] 2xl:text-[12rem] leading-none font-mono ${rubik.className} flex items-center text-center`}>
+                        <div className={`h-fit text-9xl leading-none font-mono ${rubik.className} flex items-center text-center`}>
                             <span>{minutes}</span>
                             <span>:</span>
                             <span>{seconds}</span>
