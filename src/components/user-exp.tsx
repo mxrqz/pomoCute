@@ -134,7 +134,7 @@ export default function UserExp() {
                 </Avatar>
 
                 <div className="flex flex-col h-full place-items-center">
-                    <span className="font-semibold text-">Level {currentLevel}</span>
+                    <span className="font-semibold text-">Nível {currentLevel}</span>
 
                     <Progress value={(currentXp / xpToNextLevel) * 100} max={100} className="h-1" />
                 </div>
@@ -150,18 +150,18 @@ export default function UserExp() {
                         <h3 className="font-semibold text-lg">{profile?.name}</h3>
                         <div className="flex items-center text-muted-foreground">
                             <Star className="w-4 h-4 mr-1" />
-                            <span>Level {currentLevel}</span>
+                            <span>Nível {currentLevel}</span>
                         </div>
                     </div>
                 </div>
                 <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                        <span>XP Progress</span>
+                        <span>Progresso de XP</span>
                         <span>{currentXp} / {xpToNextLevel}</span>
                     </div>
                     <Progress value={(currentXp / xpToNextLevel) * 100} className="h-2" />
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span>Next level in {xpToNextLevel - currentXp} XP</span>
+                        <span>Próximo nível em {xpToNextLevel - currentXp} XP</span>
                         <div className="flex items-center">
                             <Zap className="w-4 h-4 mr-1" />
                             <span>{(currentXp / xpToNextLevel) * 100}%</span>
