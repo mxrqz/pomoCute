@@ -95,7 +95,6 @@ export default function ChartLine() {
     const [chartData, setChartData] = useState<PomodoroData[]>()
     const [selectedChart, setSelectedChart] = useState<string>('daily')
 
-    // arrumar o salvamento de dados samanais, mensais, e anuais. Voltar para o padrão do chatgpt e mudar apenas a formatação
     const updateWeeklyPomodoros = useCallback(() => {
         const currentWeek = format(new Date(), 'ww/yyyy');
         const existingWeek = statistics.weekly.find(week => week.date === currentWeek);
@@ -139,8 +138,7 @@ export default function ChartLine() {
     }, [statistics.yearly])
 
     const addDailyPomodoro = useCallback(() => {
-        // const today = format(new Date(), 'MM/dd/yyyy');
-        const today = '11/03/2024' // ta no padrão americano
+        const today = format(new Date(), 'MM/dd/yyyy');
         const existingDay = statistics.daily.find(day => day.date === today);
 
         if (existingDay) {

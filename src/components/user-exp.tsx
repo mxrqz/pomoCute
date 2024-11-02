@@ -36,7 +36,7 @@ export default function UserExp() {
         if (isActive) {
             interval = setInterval(() => {
                 setCurrentXp(prevXp => prevXp + xpPerMinute);
-            }, 1000);
+            }, 1000 * 60);
         }
 
         if (currentCycle !== cycles) {
