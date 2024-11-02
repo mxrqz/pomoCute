@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState} from "react"
+import { useEffect, useState } from "react"
 import { Rubik_Mono_One, } from "next/font/google"
 import { Baloo_Paaji_2 } from "next/font/google"
 import { Clock, Coffee } from "lucide-react"
@@ -25,33 +25,35 @@ interface Pomodoro {
     // isPomodoroActive: (isActive: boolean) => void
 }
 
-const classic = {
-    timer: 25,
-    break: 5,
-    cycles: 4,
-    longBreak: 30
-}
+import { classic, extended, short, balanced } from "./PomodoroProvider"
 
-const short = {
-    "timer": 15,
-    "break": 3,
-    "cycles": 5,
-    "longBreak": 10
-}
+// const classic = {
+//     timer: 25,
+//     break: 5,
+//     cycles: 4,
+//     longBreak: 30
+// }
 
-const extended = {
-    "timer": 50,
-    "break": 10,
-    "cycles": 3,
-    "longBreak": 20
-}
+// const short = {
+//     "timer": 15,
+//     "break": 3,
+//     "cycles": 5,
+//     "longBreak": 10
+// }
 
-const balanced = {
-    "timer": 30,
-    "break": 7,
-    "cycles": 4,
-    "longBreak": 20
-}
+// const extended = {
+//     "timer": 50,
+//     "break": 10,
+//     "cycles": 3,
+//     "longBreak": 20
+// }
+
+// const balanced = {
+//     "timer": 30,
+//     "break": 7,
+//     "cycles": 4,
+//     "longBreak": 20
+// }
 
 type TimerOptions = 'classic' | 'short' | 'balanced' | 'extended';
 
@@ -63,16 +65,14 @@ const timers: Record<TimerOptions, { timer: number, break: number, cycles: numbe
 }
 
 export default function Pomodoro({ selectedTime }: Pomodoro) {
-    const [selectedTimer, setSelectedTimer] = useState<{ timer: number, break: number, cycles: number, longBreak: number }>(classic)
+    // const [selectedTimer, setSelectedTimer] = useState<{ timer: number, break: number, cycles: number, longBreak: number }>(classic)
+    const { setIsActive, setCycles, cycles, isActive, selectedTimer, setSelectedTimer } = usePomodoro();
+
     const [timeLeft, setTimeLeft] = useState<number>(selectedTimer.timer * 60)
-    // const [isActive, setIsActive] = useState<boolean>(false)
     const [isBreak, setIsBreak] = useState<boolean>(false)
-    // const [cycles, setCycles] = useState<number>(0)
 
     const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0')
     const seconds = String(timeLeft % 60).padStart(2, '0')
-
-    const { setIsActive, setCycles, cycles, isActive } = usePomodoro();
 
     const startTimer = () => {
         playFocusAudio()
@@ -93,11 +93,11 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
     useEffect(() => {
         let interval: NodeJS.Timeout | undefined
 
-        if (isActive && timeLeft > 0) {
+        if (isActive && timeLeft >= 0) {
             interval = setInterval(() => {
                 setTimeLeft((prevTime) => prevTime - 1)
             }, 1000)
-        } else if (timeLeft === 0) {
+        } else if (timeLeft === -1) {
             clearInterval(interval)
 
             if (!isBreak) {
@@ -119,7 +119,6 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
                 playFocusAudio()
             }
         }
-
         return () => clearInterval(interval)
     }, [isActive, timeLeft, isBreak, cycles, selectedTimer, setCycles])
 
