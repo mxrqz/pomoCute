@@ -96,7 +96,7 @@ export default function Note({ id, title, description, content, notes, returnFun
             <SheetTrigger asChild>
                 {title && description ? (
                     <div className="w-full h-fit inline-flex items-center justify-between relative">
-                        <Button variant={"outline"} className="h-fit w-full text-start focus-visible:border focus-visible:border-ring focus-visible:ring-0">
+                        <Button variant={"outline"} className="h-fit w-full text-start focus-visible:border focus-visible:border-ring focus-visible:ring-0" aria-label={`Abrir nota rápida ${title}`}>
                             <div className="w-full">
                                 <span className="font-semibold text-lg">{title}</span>
                                 <span className="text-sm text-muted-foreground line-clamp-1">{description}</span>
@@ -104,6 +104,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                         </Button>
 
                         <Button
+                            aria-label={`Deletar nota rápida ${title}`}
                             className="absolute right-2 bg-transparent group hover:bg-red-500 focus-visible:ring-red-500"
                             variant={"outline"}
                             size={"icon"}
@@ -113,7 +114,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                         </Button>
                     </div>
                 ) : (
-                    <Button className="focus-visible:border focus-visible:border-red-500 focus-visible:ring-0">
+                    <Button className="focus-visible:border focus-visible:border-red-500 focus-visible:ring-0" aria-label="Adicionar nova nota rápida">
                         <Plus />
                     </Button>
                 )}
@@ -129,10 +130,10 @@ export default function Note({ id, title, description, content, notes, returnFun
                     ) : (
                         <div className="space-y-2">
                             <SheetTitle className="space-y-1">
-                                <Label htmlFor="title" className="text-lg font-semibold text-foreground">Título:</Label>
+                                <Label htmlFor="titulo" className="text-lg font-semibold text-foreground">Título:</Label>
                                 <Input
                                     autoFocus
-                                    id="title"
+                                    id="titulo"
                                     placeholder="Adicione o título da tarefa"
                                     value={currentTitle}
                                     onChange={(e) => setCurrentTitle(e.currentTarget.value)}
@@ -140,9 +141,9 @@ export default function Note({ id, title, description, content, notes, returnFun
                             </SheetTitle>
 
                             <SheetDescription className="space-y-1">
-                                <Label htmlFor="description" className="text-sm text-muted-foreground">Descrição:</Label>
+                                <Label htmlFor="descrição" className="text-sm text-muted-foreground">Descrição:</Label>
                                 <Input
-                                    id="description"
+                                    id="descrição"
                                     placeholder="Adicione a descrição da tarefa"
                                     value={currentDescription}
                                     onChange={(e) => setCurrentDescription(e.currentTarget.value)}
@@ -161,6 +162,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                                 <div className="inline-flex absolute top-2 right-2 z-10">
                                     <Button className="inline-flex gap-2 focus-visible:ring-red-500 opacity-0 focus-visible:opacity-100 group-hover:opacity-100 transition-opacity duration-300"
                                         onClick={() => setIsEditing(false)}
+                                        aria-label="Salvar edição da nota"
                                     >
                                         <Save size={16} className="shrink-0" />
                                         Salvar
@@ -179,6 +181,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                                 <div className="inline-flex absolute top-2 right-2 z-10">
                                     <Button className="inline-flex gap-2 focus-visible:ring-red-500 opacity-0 focus-visible:opacity-100 group-hover:opacity-100 transition-opacity duration-300"
                                         onClick={() => setIsEditing(true)}
+                                        aria-label="Editar nota rápida"
                                     >
                                         <Pencil size={16} className="shrink-0" />
                                         Editar

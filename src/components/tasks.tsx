@@ -21,12 +21,22 @@ export default function Tasks() {
     const lastTaskRef = useRef<HTMLLIElement>(null)
     const [isInitialized, setIsInitialized] = useState<boolean>(false)
 
-    const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.code === 'Enter') {
+    const handleEnter = (button: boolean, event?: KeyboardEvent<HTMLInputElement>) => {
+        if (event && event.code === 'Enter') {
             if (!event.currentTarget || !input.current || event.currentTarget.value.trim() === '') return
 
             const newTask: Tasks = {
                 task: event.currentTarget.value.trim(),
+                completed: false
+            }
+
+            setTasks((task) => [...task, newTask])
+            input.current.value = ''
+        } else if (button) {
+            if (!input.current || input.current.value.trim() === '' ) return
+
+            const newTask: Tasks = {
+                task: input.current.value.trim(),
                 completed: false
             }
 
@@ -105,10 +115,14 @@ export default function Tasks() {
                     <Input className="focus-visible:ring-0 focus-visible:border-ring min-h-9"
                         ref={input}
                         placeholder="Adicione uma nova Tarefa"
-                        onKeyDown={e => handleEnter(e)}
+                        onKeyDown={e => handleEnter(false, e)}
+                        aria-label="Digite a tarefa que deseja adicionar"
                     />
 
-                    <Button className="min-h-9 aspect-square border flex items-center justify-center rounded-md p-0 focus-visible:border focus-visible:border-red-500 focus-visible:ring-0">
+                    <Button className="min-h-9 aspect-square border flex items-center justify-center rounded-md p-0 focus-visible:border focus-visible:border-red-500 focus-visible:ring-0"
+                        aria-label="Adicionar nova tarefa"
+                        onClick={() => handleEnter(true)}
+                    >
                         <Plus />
                     </Button>
                 </div>

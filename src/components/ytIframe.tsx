@@ -22,7 +22,7 @@ interface MusicDetails {
     author: string
 }
 
-export default function YtIframe({ videoURL}: YtIframeProps) {
+export default function YtIframe({ videoURL }: YtIframeProps) {
     const extractYouTubeID = () => {
         const videoRegex = /(?:youtube\.com\/.*(?:v=|\/v\/|\/embed\/|\/shorts\/|\/watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
         // const playlistRegex = /[?&]list=([a-zA-Z0-9_-]+)/;
@@ -174,10 +174,10 @@ export default function YtIframe({ videoURL}: YtIframeProps) {
                         <div className="w-[130px] h-[75px] rounded-md hidden" ref={playerRef} />
 
                         <div className="inline-flex items-center gap-2 w-fit">
-                            <Label htmlFor="volume-slider" className="flex items-center gap-2">
+                            <Label htmlFor="Volume" className="flex items-center gap-2">
                                 <Toggle className="p-2"
                                     onClick={(e) => e.stopPropagation()}
-                                    onPressedChange={(e) => { 
+                                    onPressedChange={(e) => {
                                         setSoundMuted(e);
                                         if (e) {
                                             youtubePlayer.current.mute()
@@ -185,14 +185,15 @@ export default function YtIframe({ videoURL}: YtIframeProps) {
                                             youtubePlayer.current.unMute()
                                         }
                                     }}
-                                    aria-label="Toggle Sound"
+                                    aria-label="Silenciar música de fundo"
                                 >
                                     {soundMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                                 </Toggle>
-                                <span className="sr-only">Volume slider</span>
+                                <span className="sr-only">Botão para silenciar a música</span>
                             </Label>
 
-                            <Slider id="volume-slider" className="w-32"
+                            <Slider id="Volume" className="w-32"
+                                aria-label="Barra de volume da música"
                                 onValueChange={(e) => { setVolume(e[0]); youtubePlayer.current.setVolume(e[0]) }}
                                 defaultValue={[33]}
                                 max={100}
@@ -202,7 +203,7 @@ export default function YtIframe({ videoURL}: YtIframeProps) {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                        <Progress value={Math.round((musicDetails.currentTime / musicDetails.duration) * 100)} max={100} />
+                        <Progress value={Math.round((musicDetails.currentTime / musicDetails.duration) * 100)} max={100} aria-label="Barra de progresso da música de fundo" />
 
                         <div className="inline-flex justify-between">
                             <div className="inline-flex">

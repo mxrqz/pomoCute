@@ -99,7 +99,7 @@ const initialValues = () => {
     return initialStatistics;
 };
 
-export default function ChartLine() {
+export default function Stats() {
     const { selectedTimer, cycles } = usePomodoro()
     const [currentCycle, setCurrentCycle] = useState<number>(0)
     // const [statistics, setStatistics] = useState<Statistics>(initialValues)
@@ -212,7 +212,7 @@ export default function ChartLine() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline" size={"icon"} onClick={() => setChartData(statistics.daily)}>
+                <Button variant="outline" size={"icon"} onClick={() => setChartData(statistics.daily)} aria-label="Visualizar estatísticas de pomodoros">
                     <ChartLineIcon />
                 </Button>
             </DialogTrigger>

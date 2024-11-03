@@ -168,16 +168,17 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
                     <Select
                         defaultValue="classic"
                         onValueChange={(value: TimerOptions) => setSelectedTimer(timers[value])}
+                        
                     >
-                        <SelectTrigger className="text-sm 2xl:text-lg font-medium min-w-[150px]">
+                        <SelectTrigger className="text-sm 2xl:text-lg font-medium min-w-[150px]" aria-label="Selecione o tipo do Pomodoro">
                             <SelectValue placeholder={'Pomodoro'} />
                         </SelectTrigger>
 
                         <SelectContent>
-                            <SelectItem value="classic">Clássico</SelectItem>
-                            <SelectItem value="short">Curto</SelectItem>
-                            <SelectItem value="balanced">Balanceado</SelectItem>
-                            <SelectItem value="extended">Extendido</SelectItem>
+                            <SelectItem value="classic" aria-label="Clássico">Clássico</SelectItem>
+                            <SelectItem value="short" aria-label="Curto">Curto</SelectItem>
+                            <SelectItem value="balanced" aria-label="Balanceado">Balanceado</SelectItem>
+                            <SelectItem value="extended" aria-label="Extendido">Extendido</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

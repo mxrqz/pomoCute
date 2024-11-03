@@ -10,9 +10,9 @@ import Tasks from "@/components/tasks";
 import QuickNotes from "@/components/quick-notes";
 // import Settings from "@/components/settings";
 import YtIframe from "@/components/ytIframe";
-import ChartLine from "@/components/chart-line";
 import UserExp from "@/components/user-exp";
 import { PomodoroProvider } from "@/components/PomodoroProvider";
+import Stats from "@/components/stats";
 
 // const type = "Video"
 const URL = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
@@ -54,7 +54,7 @@ export default function Home() {
           <h2 className="text-3xl font-semibold tracking-tight">PomoCute</h2>
 
           <div className="inline-flex gap-5">
-            <ChartLine />
+            <Stats />
             {/* <Settings settings={handleSettings} /> */}
             <ModeToggle />
 
