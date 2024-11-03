@@ -125,6 +125,12 @@ export default function UserExp() {
         getXpAndLevel()
     }, [])
 
+    // things to add
+    // [ ] separator
+    // [ ] achievements
+    //  - [ ] First Pomodoro
+    //  - [ ] pensar em outros achievements
+
     return (
         <Popover>
             <PopoverTrigger className="inline-flex max-h-9 h-9 gap-3 items-center cursor-pointer border rounded-md px-2 hover:bg-accent group transition-colors relative">
