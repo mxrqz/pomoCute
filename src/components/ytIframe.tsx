@@ -151,7 +151,10 @@ export default function YtIframe({ videoURL }: YtIframeProps) {
 
     return (
         <>
-            <Script src="https://www.youtube.com/iframe_api" />
+            <Script
+                src="https://www.youtube.com/iframe_api"
+                strategy="lazyOnload"
+            />
 
             {musicDetails && (
                 <div className="flex flex-col gap-5 w-full">
