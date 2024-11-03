@@ -2,9 +2,7 @@
 
 import Note from "./note";
 import { useRef, useEffect, useState } from "react";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
-import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
+import { ScrollArea } from "./ui/scroll-area";
 
 const markdownText = `
 # Pluto

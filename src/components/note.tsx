@@ -12,12 +12,12 @@ import remarkMath from 'remark-math'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet"
+import { ScrollArea } from "./ui/scroll-area"
 import { useEffect, useState } from "react"
 import { Textarea } from "./ui/textarea"
 import { Button } from "./ui/button"
-import { Pencil, Plus, RefreshCw, Save, Trash2 } from "lucide-react"
+import { Pencil, Plus, Save, Trash2 } from "lucide-react"
 import { Label } from "./ui/label"
 import { Input } from "./ui/input"
 
