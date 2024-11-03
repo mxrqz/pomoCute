@@ -12,9 +12,9 @@ import remarkMath from 'remark-math'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet"
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet"
 import { ScrollArea } from "./ui/scroll-area"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Textarea } from "./ui/textarea"
 import { Button } from "./ui/button"
 import { Pencil, Plus, Save, Trash2 } from "lucide-react"
@@ -40,18 +40,18 @@ interface Notes {
 }
 
 export default function Note({ id, title, description, content, notes, returnFunction }: Note) {
-    const [isEditing, setIsEditing] = useState<boolean>(false)
+    const [isEditing, setIsEditing] = useState<boolean>(content ? false : true)
     const [currentTitle, setCurrentTitle] = useState<string>()
     const [currentDescription, setCurrentDescription] = useState<string>()
-    const [currentNoteText, setCurrentNoteText] = useState<string>()
+    const [currentNoteText, setCurrentNoteText] = useState<string | undefined>(content ? content : undefined)
 
-    useEffect(() => {
-        if (!content) {
-            setIsEditing(true)
-        } else {
-            setCurrentNoteText(content)
-        }
-    }, [content])
+    // useEffect(() => {
+    //     if (!content) {
+    //         setIsEditing(true)
+    //     } else {
+    //         setCurrentNoteText(content)
+    //     }
+    // }, [content])
 
     const handleSave = () => {
         if (returnFunction && currentTitle && currentDescription && currentNoteText) {
@@ -69,9 +69,7 @@ export default function Note({ id, title, description, content, notes, returnFun
 
             returnFunction(notes)
 
-            setCurrentTitle('')
-            setCurrentDescription('')
-            setCurrentNoteText('')
+            resetStates()
         }
     }
 
@@ -86,12 +84,19 @@ export default function Note({ id, title, description, content, notes, returnFun
             }
         }
     }
+
+    const resetStates = () => {
+        setCurrentTitle('')
+        setCurrentDescription('')
+        setCurrentNoteText('')
+    }
+
     return (
         <Sheet>
             <SheetTrigger asChild>
                 {title && description ? (
                     <div className="w-full h-fit inline-flex items-center justify-between relative">
-                        <Button variant={"outline"} className="h-fit w-full text-start">
+                        <Button variant={"outline"} className="h-fit w-full text-start focus-visible:border focus-visible:border-ring focus-visible:ring-0">
                             <div className="w-full">
                                 <span className="font-semibold text-lg">{title}</span>
                                 <span className="text-sm text-muted-foreground line-clamp-1">{description}</span>
@@ -99,7 +104,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                         </Button>
 
                         <Button
-                            className="absolute right-2 bg-transparent group hover:bg-red-500"
+                            className="absolute right-2 bg-transparent group hover:bg-red-500 focus-visible:ring-red-500"
                             variant={"outline"}
                             size={"icon"}
                             onClick={(e) => handleDelete(e)}
@@ -108,7 +113,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                         </Button>
                     </div>
                 ) : (
-                    <Button>
+                    <Button className="focus-visible:border focus-visible:border-red-500 focus-visible:ring-0">
                         <Plus />
                     </Button>
                 )}
@@ -129,6 +134,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                                     autoFocus
                                     id="title"
                                     placeholder="Adicione o título da tarefa"
+                                    value={currentTitle}
                                     onChange={(e) => setCurrentTitle(e.currentTarget.value)}
                                 />
                             </SheetTitle>
@@ -138,6 +144,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                                 <Input
                                     id="description"
                                     placeholder="Adicione a descrição da tarefa"
+                                    value={currentDescription}
                                     onChange={(e) => setCurrentDescription(e.currentTarget.value)}
                                 />
                             </SheetDescription>
@@ -148,11 +155,11 @@ export default function Note({ id, title, description, content, notes, returnFun
                 <div className="flex flex-col gap-1 h-full overflow-hidden">
                     <Label htmlFor="text-input" className="text-md">Nota:</Label>
 
-                    <ScrollArea className="w-full border rounded-md h-full p-2 relative group">
+                    <ScrollArea className="w-full border rounded-md h-full p-2 relative group focus-within:border-ring">
                         {isEditing ? (
                             <>
-                                <div className="inline-flex absolute top-2 right-2 opacity-0 group-hover:opacity-100 z-10">
-                                    <Button className="inline-flex gap-2"
+                                <div className="inline-flex absolute top-2 right-2 z-10">
+                                    <Button className="inline-flex gap-2 focus-visible:ring-red-500 opacity-0 focus-visible:opacity-100 group-hover:opacity-100 transition-opacity duration-300"
                                         onClick={() => setIsEditing(false)}
                                     >
                                         <Save size={16} className="shrink-0" />
@@ -169,8 +176,8 @@ export default function Note({ id, title, description, content, notes, returnFun
                             </>
                         ) : (
                             <>
-                                <div className="inline-flex absolute top-2 right-2 opacity-0 group-hover:opacity-100 z-10">
-                                    <Button className="inline-flex gap-2"
+                                <div className="inline-flex absolute top-2 right-2 z-10">
+                                    <Button className="inline-flex gap-2 focus-visible:ring-red-500 opacity-0 focus-visible:opacity-100 group-hover:opacity-100 transition-opacity duration-300"
                                         onClick={() => setIsEditing(true)}
                                     >
                                         <Pencil size={16} className="shrink-0" />
@@ -189,10 +196,15 @@ export default function Note({ id, title, description, content, notes, returnFun
                     </ScrollArea>
                 </div>
 
-                <div className="inline-flex gap-5 justify-end">
-                    <Button variant={"outline"}>Cancelar</Button>
-                    <Button onClick={handleSave}>Salvar</Button>
-                </div>
+                <SheetFooter>
+                    <SheetClose asChild>
+                        <Button variant={"outline"} onClick={resetStates}>Cancelar</Button>
+                    </SheetClose>
+
+                    <SheetClose asChild>
+                        <Button onClick={handleSave} className="focus-visible:ring-red-500">Salvar</Button>
+                    </SheetClose>
+                </SheetFooter>
             </SheetContent>
         </Sheet>
     )

@@ -108,7 +108,7 @@ export default function Tasks() {
                         onKeyDown={e => handleEnter(e)}
                     />
 
-                    <Button className="min-h-9 aspect-square border flex items-center justify-center rounded-md p-0">
+                    <Button className="min-h-9 aspect-square border flex items-center justify-center rounded-md p-0 focus-visible:border focus-visible:border-red-500 focus-visible:ring-0">
                         <Plus />
                     </Button>
                 </div>

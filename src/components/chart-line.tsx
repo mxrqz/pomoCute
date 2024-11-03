@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { useCallback, useEffect, useState } from "react";
 import { format } from 'date-fns'
@@ -88,10 +88,22 @@ const initialStatistics: Statistics = {
     yearly: [],
 };
 
+const initialValues = () => {
+    if (typeof window !== "undefined") {
+        const stats = localStorage.getItem('pomodoroStats');
+        if (stats) {
+            const statsParsed: Statistics = JSON.parse(stats);
+            return statsParsed;
+        }
+    }
+    return initialStatistics;
+};
+
 export default function ChartLine() {
     const { selectedTimer, cycles } = usePomodoro()
     const [currentCycle, setCurrentCycle] = useState<number>(0)
-    const [statistics, setStatistics] = useState<Statistics>(initialStatistics)
+    // const [statistics, setStatistics] = useState<Statistics>(initialValues)
+    const statistics: Statistics = initialValues()
     const [chartData, setChartData] = useState<PomodoroData[]>()
     const [selectedChart, setSelectedChart] = useState<string>('daily')
 
@@ -157,25 +169,6 @@ export default function ChartLine() {
         localStorage.setItem('pomodoroStats', JSON.stringify(statistics))
     }, [statistics, updateAnnualPomodoros, updateMonthlyPomodoros, updateWeeklyPomodoros])
 
-    useEffect(() => {
-        const stats = localStorage.getItem('pomodoroStats')
-        if (stats) {
-            const statsParsed: Statistics = JSON.parse(stats)
-            setStatistics(statsParsed)
-            setChartData(statsParsed.daily)
-        }
-    }, [])
-
-    useEffect(() => {
-        if (currentCycle === selectedTimer.cycles) {
-            addDailyPomodoro()
-        }
-    }, [addDailyPomodoro, currentCycle, selectedTimer.cycles])
-
-    useEffect(() => {
-        setCurrentCycle(cycles)
-    }, [cycles, setCurrentCycle])
-
     const handleChartData = (value: string) => {
         setSelectedChart(value)
         switch (value) {
@@ -196,6 +189,25 @@ export default function ChartLine() {
                 break;
         }
     }
+
+    // useEffect(() => {
+    //     const stats = localStorage.getItem('pomodoroStats')
+    //     if (stats) {
+    //         const statsParsed: Statistics = JSON.parse(stats)
+    //         setStatistics(statsParsed)
+    //         setChartData(statsParsed.daily)
+    //     }
+    // }, [])
+
+    useEffect(() => {
+        if (currentCycle === selectedTimer.cycles) {
+            addDailyPomodoro()
+        }
+    }, [addDailyPomodoro, currentCycle, selectedTimer.cycles])
+
+    useEffect(() => {
+        setCurrentCycle(cycles)
+    }, [cycles, setCurrentCycle])
 
     return (
         <Dialog>
@@ -244,18 +256,18 @@ export default function ChartLine() {
                                                 return value
                                             case "monthly":
                                                 return value
-                                                // return format(value, 'MMM');
+                                            // return format(value, 'MMM');
                                             case "yearly":
                                                 return value
-                                                // return format(value, 'y')
+                                            // return format(value, 'y')
                                         }
                                         return value
                                     }}
 
-                                    // daily: [],
-                                    // weekly: [],
-                                    // monthly: [],
-                                    // yearly: [],
+                                // daily: [],
+                                // weekly: [],
+                                // monthly: [],
+                                // yearly: [],
                                 />
                                 <ChartTooltip
                                     cursor={true}

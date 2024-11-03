@@ -108,7 +108,7 @@ export default function UserExp() {
         const getProfile = () => {
             const profile = localStorage.getItem('profile')
             if (!profile) {
-                const randomNumber = Math.floor(Math.random() * 27);
+                const randomNumber = Math.floor(Math.random() * 27) + 1;
                 const image = `./pfp/profile-${randomNumber}.png`
                 const name = usernames[Math.floor(Math.random() * usernames.length)]
 
@@ -170,7 +170,7 @@ export default function UserExp() {
                         <span>Próximo nível em {xpToNextLevel - currentXp} XP</span>
                         <div className="flex items-center">
                             <Zap className="w-4 h-4 mr-1" />
-                            <span>{(currentXp / xpToNextLevel) * 100}%</span>
+                            <span>{Math.round((currentXp / xpToNextLevel) * 100)}%</span>
                         </div>
                     </div>
                 </div>

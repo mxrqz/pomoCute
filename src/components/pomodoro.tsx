@@ -158,9 +158,9 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
 
                 <div className="flex gap-2">
                     {isActive ? (
-                        <Button className="text-sm 2xl:text-lg font-medium" onClick={pauseTimer}>Pause</Button>
+                        <Button className="text-sm 2xl:text-lg font-medium focus-visible:ring-red-500" onClick={pauseTimer}>Pause</Button>
                     ) : (
-                        <Button className="text-sm 2xl:text-lg font-medium" onClick={startTimer}>Start</Button>
+                        <Button className="text-sm 2xl:text-lg font-medium focus-visible:ring-red-500" onClick={startTimer}>Start</Button>
                     )}
 
                     <Button variant={"outline"} className="text-sm 2xl:text-lg font-medium" onClick={resetTimer}>Reset</Button>
