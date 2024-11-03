@@ -109,7 +109,7 @@ export default function UserExp() {
             const profile = localStorage.getItem('profile')
             if (!profile) {
                 const randomNumber = Math.floor(Math.random() * 27) + 1;
-                const image = `./pfp/profile-${randomNumber}.png`
+                const image = `/pfp/profile-${randomNumber}.webp`
                 const name = usernames[Math.floor(Math.random() * usernames.length)]
 
                 const profile = { image, name }

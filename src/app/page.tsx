@@ -14,10 +14,8 @@ import ChartLine from "@/components/chart-line";
 import UserExp from "@/components/user-exp";
 import { PomodoroProvider } from "@/components/PomodoroProvider";
 
-const type = "Video"
+// const type = "Video"
 const URL = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
-const autoplay = true
-const index = 0
 
 export default function Home() {
   const [timer, setTimer] = useState<{ timer: number; break: number, cycles: number, longBreak: number }>()
@@ -68,8 +66,8 @@ export default function Home() {
           <div className="w-full flex flex-col gap-10">
             <Pomodoro selectedTime={handleSelectedTime} />
 
-            {type && URL && (
-              <YtIframe videoURL={URL} playlist={false} autoplay={autoplay} index={index} />
+            {URL && (
+              <YtIframe videoURL={URL} />
             )}
           </div>
 

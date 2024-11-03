@@ -12,10 +12,6 @@ import { Progress } from "./ui/progress";
 
 interface YtIframeProps {
     videoURL: string,
-    playlist: boolean,
-    autoplay: boolean | undefined,
-    index: number | undefined,
-    indexChange?: (playlistIndex: number) => void
 }
 
 interface MusicDetails {
@@ -26,23 +22,18 @@ interface MusicDetails {
     author: string
 }
 
-export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIframeProps) {
+export default function YtIframe({ videoURL}: YtIframeProps) {
     const extractYouTubeID = () => {
         const videoRegex = /(?:youtube\.com\/.*(?:v=|\/v\/|\/embed\/|\/shorts\/|\/watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-        const playlistRegex = /[?&]list=([a-zA-Z0-9_-]+)/;
+        // const playlistRegex = /[?&]list=([a-zA-Z0-9_-]+)/;
 
         const videoMatch = videoURL.match(videoRegex);
-        const playlistMatch = videoURL.match(playlistRegex);
+        // const playlistMatch = videoURL.match(playlistRegex);
 
-        if (!videoMatch && !playlistMatch) return "jfKfPfyJRdk";
-
-        if (playlist && playlistMatch) {
-            return playlistMatch[1];
+        if (videoMatch) {
+            return videoMatch[1]
         }
 
-        if (!playlist && videoMatch) {
-            return videoMatch[1];
-        }
 
         return "jfKfPfyJRdk";
     }
@@ -77,17 +68,26 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
         return Math.floor(currentTime % 60);
     }
 
+    const play = () => {
+        if (!youtubePlayer.current) return
+        youtubePlayer.current.playVideo()
+
+        setIsPaused(false)
+    }
+
+    const pause = () => {
+        if (!youtubePlayer.current) return
+        youtubePlayer.current.pauseVideo()
+
+        setIsPaused(true)
+    }
+
     useEffect(() => {
         let interval: NodeJS.Timeout;
 
-        const tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
-
         (window as any).onYouTubeIframeAPIReady = () => {
             youtubePlayer.current = new (window as any).YT.Player(playerRef.current, {
-                videoId: !playlist && id,
+                videoId: id,
                 events: {
                     onReady: onPlayerReady,
                     onStateChange: onPlayerStateChange,
@@ -104,22 +104,10 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
         const onPlayerReady = (event: any) => {
             event.target.cueVideoById(id);
 
-            if (soundMuted) {
-                event.target.mute();
-            } else {
-                event.target.unMute();
-            }
-
             event.target.setVolume(volume);
         };
 
         const onPlayerStateChange = (event: any) => {
-            if (event.data === (window as any).YT.PlayerState.PLAYING && playlist) {
-                const currentPlaylistIndex = youtubePlayer.current.getPlaylistIndex();
-                saveIndex(currentPlaylistIndex)
-                // indexChange(currentPlaylistIndex)
-            }
-
             if (event.data === (window as any).YT.PlayerState.PLAYING) {
                 const videoData = youtubePlayer.current.getVideoData();
                 if (videoData) {
@@ -150,68 +138,20 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
             }
 
             if (event.data === (window as any).YT.PlayerState.PAUSED || event.data === (window as any).YT.PlayerState.ENDED) {
-                clearInterval(interval); // Interromper o intervalo caso o vídeo seja pausado ou tenha terminado
+                clearInterval(interval);
             }
         };
-
-        const saveIndex = (newIndex: number) => {
-            const musicItems = { type: playlist ? "Playlist" : "Video", URL: videoURL, autoplay, index: newIndex };
-            localStorage.setItem('music', JSON.stringify(musicItems));
-        }
 
         // return () => {
         //     if (youtubePlayer.current) {
         //         youtubePlayer.current.destroy();
         //     }
         // };
-    }, [autoplay, id, index, playlist, soundMuted, videoURL, volume]);
-
-    useEffect(() => {
-        if (!youtubePlayer.current) return;
-
-        if (playlist) {
-            youtubePlayer.current.loadPlaylist({
-                list: id,
-                listType: 'playlist',
-            });
-        } else {
-            youtubePlayer.current.loadVideoById(id);
-        }
-    }, [id, playlist]);
-
-    useEffect(() => {
-        if (!youtubePlayer.current) return
-
-        if (soundMuted) {
-            youtubePlayer.current.mute();
-        } else {
-            youtubePlayer.current.unMute();
-        }
-    }, [soundMuted])
-
-    const play = () => {
-        if (!youtubePlayer.current) return
-        youtubePlayer.current.playVideo()
-
-        setIsPaused(false)
-    }
-
-    const pause = () => {
-        if (!youtubePlayer.current) return
-        youtubePlayer.current.pauseVideo()
-
-        setIsPaused(true)
-    }
-
-    useEffect(() => {
-        if (!youtubePlayer.current) return
-        youtubePlayer.current.setVolume(volume)
-    }, [volume])
+    }, [id, volume]);
 
     return (
         <>
             <Script src="https://www.youtube.com/iframe_api" />
-
 
             {musicDetails && (
                 <div className="flex flex-col gap-5 w-full">
@@ -237,7 +177,14 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
                             <Label htmlFor="volume-slider" className="flex items-center gap-2">
                                 <Toggle className="p-2"
                                     onClick={(e) => e.stopPropagation()}
-                                    onPressedChange={setSoundMuted}
+                                    onPressedChange={(e) => { 
+                                        setSoundMuted(e);
+                                        if (e) {
+                                            youtubePlayer.current.mute()
+                                        } else {
+                                            youtubePlayer.current.unMute()
+                                        }
+                                    }}
                                     aria-label="Toggle Sound"
                                 >
                                     {soundMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
@@ -246,7 +193,7 @@ export default function YtIframe({ videoURL, playlist, autoplay, index }: YtIfra
                             </Label>
 
                             <Slider id="volume-slider" className="w-32"
-                                onValueChange={(e) => setVolume(e[0])}
+                                onValueChange={(e) => { setVolume(e[0]); youtubePlayer.current.setVolume(e[0]) }}
                                 defaultValue={[33]}
                                 max={100}
                                 step={1}
