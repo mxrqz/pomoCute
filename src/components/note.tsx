@@ -53,13 +53,6 @@ export default function Note({ id, title, description, content, notes, returnFun
         }
     }, [content])
 
-    const updateNotes = (updatedNotes: Notes[]) => {
-        localStorage.setItem('notes', JSON.stringify(updatedNotes));
-        if (returnFunction) {
-            returnFunction(updatedNotes);
-        }
-    };
-
     const handleSave = () => {
         if (returnFunction && currentTitle && currentDescription && currentNoteText) {
             const newNote = {
