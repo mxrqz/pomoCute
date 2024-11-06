@@ -1,19 +1,22 @@
 "use client"
 
-import { Label } from "./ui/label"
-import { Checkbox } from "./ui/checkbox"
-import { Input } from "./ui/input"
 import { KeyboardEvent, useEffect, useRef, useState } from "react"
-import { ScrollArea, ScrollBar } from "./ui/scroll-area"
-import { playToDoItemCompleted } from "./sounds"
-import { Button } from "./ui/button"
 import { Plus, Trash2 } from "lucide-react"
-import { Separator } from "./ui/separator"
 
-interface Tasks {
-    task: string,
-    completed: boolean
-}
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+
+import { playToDoItemCompleted } from "../functions/sounds"
+
+import type { Tasks } from "@/types/types"
+
+import { updateCompletedTasksCount } from "@/functions/statsHandle"
+import { newAchievement } from "./newAchievementNoti"
+import { checkAchievements } from "@/functions/achievementsHandle"
 
 export default function Tasks() {
     const [tasks, setTasks] = useState<Tasks[]>([]);
@@ -33,7 +36,7 @@ export default function Tasks() {
             setTasks((task) => [...task, newTask])
             input.current.value = ''
         } else if (button) {
-            if (!input.current || input.current.value.trim() === '' ) return
+            if (!input.current || input.current.value.trim() === '') return
 
             const newTask: Tasks = {
                 task: input.current.value.trim(),
@@ -58,6 +61,9 @@ export default function Tasks() {
 
         if (checked) {
             playToDoItemCompleted();
+            updateCompletedTasksCount()
+            const achievement = checkAchievements()
+            if (achievement) newAchievement(achievement)
         }
     };
 
@@ -65,7 +71,7 @@ export default function Tasks() {
         const storedTasks = localStorage.getItem('tasks');
         if (storedTasks) {
             setTasks(JSON.parse(storedTasks));
-        } 
+        }
 
         setIsInitialized(true)
     }, []);

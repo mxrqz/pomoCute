@@ -1,5 +1,9 @@
 "use client"
 
+import { useState } from "react"
+import { Pencil, Plus, Save, Trash2 } from "lucide-react"
+import { nanoid } from 'nanoid'
+
 import Markdown from 'react-markdown'
 import rehypeFormat from 'rehype-format'
 import rehypeRaw from 'rehype-raw'
@@ -12,46 +16,24 @@ import remarkMath from 'remark-math'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet"
-import { ScrollArea } from "./ui/scroll-area"
-import { useState } from "react"
-import { Textarea } from "./ui/textarea"
-import { Button } from "./ui/button"
-import { Pencil, Plus, Save, Trash2 } from "lucide-react"
-import { Label } from "./ui/label"
-import { Input } from "./ui/input"
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
-import { nanoid } from 'nanoid'
+import type { Notes, Note } from '@/types/types'
 
-interface Note {
-    id?: string;
-    title?: string,
-    description?: string;
-    content?: string;
-    notes?: Notes[];
-    returnFunction?: (notes: Notes[]) => void;
-}
-
-interface Notes {
-    id: string;
-    title: string,
-    description: string,
-    content: string
-}
+// Dps deixar o usuario editar o titulo e descrição de uma nota ja criada
 
 export default function Note({ id, title, description, content, notes, returnFunction }: Note) {
+    // const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false)
+    // const [isEditingDesc, setIsEditingDesc] = useState<boolean>(false)
     const [isEditing, setIsEditing] = useState<boolean>(content ? false : true)
-    const [currentTitle, setCurrentTitle] = useState<string>()
-    const [currentDescription, setCurrentDescription] = useState<string>()
-    const [currentNoteText, setCurrentNoteText] = useState<string | undefined>(content ? content : undefined)
-
-    // useEffect(() => {
-    //     if (!content) {
-    //         setIsEditing(true)
-    //     } else {
-    //         setCurrentNoteText(content)
-    //     }
-    // }, [content])
+    const [currentTitle, setCurrentTitle] = useState<string>('')
+    const [currentDescription, setCurrentDescription] = useState<string>('')
+    const [currentNoteText, setCurrentNoteText] = useState<string>(content ? content : '')
 
     const handleSave = () => {
         if (returnFunction && currentTitle && currentDescription && currentNoteText) {
@@ -63,7 +45,7 @@ export default function Note({ id, title, description, content, notes, returnFun
             }
 
             const oldNotes = localStorage.getItem('notes')
-            const parsedNotes: Notes[] = oldNotes ? JSON.parse(oldNotes) : undefined
+            const parsedNotes: Notes[] = oldNotes ? JSON.parse(oldNotes) : []
 
             const notes: Notes[] = oldNotes ? [...parsedNotes, newNote] : [newNote]
 
@@ -124,7 +106,36 @@ export default function Note({ id, title, description, content, notes, returnFun
                 <SheetHeader className="space-y-0">
                     {title && description ? (
                         <>
-                            <SheetTitle>{title}</SheetTitle>
+                            {/* {isEditingTitle ? (
+                                <SheetTitle className="space-y-1">
+                                    <Label htmlFor="titulo" className="text-lg font-semibold text-foreground">Título:</Label>
+                                    <Input
+                                        autoFocus
+                                        id="titulo"
+                                        placeholder="Adicione o título da tarefa"
+                                        value={currentTitle}
+                                        onChange={(e) => setCurrentTitle(e.currentTarget.value)}
+                                    />
+                                </SheetTitle>
+                            ) : (
+                            )} */}
+                                <SheetTitle className="group">
+                                    {title}
+                                    {/* <Pencil size={16} className="opacity-100 group-hover:opacity-100" /> */}
+                                </SheetTitle>
+
+                            {/* {isEditingDesc ? (
+                                <SheetDescription className="space-y-1">
+                                    <Label htmlFor="descrição" className="text-sm text-muted-foreground">Descrição:</Label>
+                                    <Input
+                                        id="descrição"
+                                        placeholder="Adicione a descrição da tarefa"
+                                        value={currentDescription}
+                                        onChange={(e) => setCurrentDescription(e.currentTarget.value)}
+                                    />
+                                </SheetDescription>
+                            ) : (
+                            )} */}
                             <SheetDescription>{description}</SheetDescription>
                         </>
                     ) : (

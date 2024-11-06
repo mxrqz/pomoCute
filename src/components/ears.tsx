@@ -1,6 +1,4 @@
-interface Ears {
-    className: string
-}
+import type { Ears } from "@/types/types"
 
 export default function Ears({ className }: Ears) {
     return (

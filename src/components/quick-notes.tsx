@@ -1,61 +1,19 @@
 "use client"
 
-import Note from "./note";
 import { useRef, useEffect, useState } from "react";
-import { ScrollArea } from "./ui/scroll-area";
 
-// const markdownText = `
-// # Pluto
+import type { Notes } from "@/types/types";
 
-// **Pluto** (minor-planet designation: *134340 Pluto*)
-// is a
-// [dwarf planet](https://en.wikipedia.org/wiki/Dwarf_planet)
-// in the
-// [Kuiper belt](https://en.wikipedia.org/wiki/Kuiper_belt).
+import { updateQuickNotesCount } from "@/functions/statsHandle";
 
-// ## History
+import Note from "@/components/note";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { newAchievement } from "@/components/newAchievementNoti";
 
-// In the 1840s,
-// [Urbain Le Verrier](https://wikipedia.org/wiki/Urbain_Le_Verrier)
-// used Newtonian mechanics to predict the position of the
-// then-undiscovered planet
-// [Neptune](https://wikipedia.org/wiki/Neptune)
-// after analyzing perturbations in the orbit of
-// [Uranus](https://wikipedia.org/wiki/Uranus).
-
-// ***
-
-// Just a link: www.nasa.gov.
-
-// * Lists
-// * [ ] todo
-// * [x] done
-
-// A table:
-
-// | a | b |
-// | - | - |
-// | valor 1 | valor 2 |
-
-// <details><summary>Show example</summary>
-
-// ~~~js
-// console.log('Hi pluto!')
-// ~~~
-
-// </details>
-// `;
-
-interface Notes {
-    id: string,
-    title: string,
-    description: string,
-    content: string
-}
+import { checkAchievements } from "@/functions/achievementsHandle";
 
 export default function QuickNotes() {
     const lastTaskRef = useRef<HTMLLIElement>(null)
-
     const [notes, setNotes] = useState<Notes[]>()
 
     useEffect(() => {
@@ -64,22 +22,20 @@ export default function QuickNotes() {
         }
     }, []);
 
-    const getNotes = () => {
-        const notesString = localStorage.getItem('notes')
-        if (notesString) {
-            const notes = JSON.parse(notesString)
-            // console.log(notes)
-            setNotes(notes)
-        }
-    }
-
     useEffect(() => {
-        getNotes()
+        const notesString = localStorage.getItem('notes')
+        if (notesString) setNotes(JSON.parse(notesString))
     }, [])
 
-    const handleReturnFunction = (notes: Notes[]) => {
-        setNotes(notes)
-        localStorage.setItem('notes', JSON.stringify(notes))
+    const handleReturnFunction = (newNotes: Notes[]) => {
+        setNotes(newNotes)
+        localStorage.setItem('notes', JSON.stringify(newNotes))
+
+        if (notes && newNotes.length > notes.length) {
+            updateQuickNotesCount()
+            const achievement = checkAchievements()
+            if (achievement) newAchievement(achievement)
+        }
     }
 
     return (

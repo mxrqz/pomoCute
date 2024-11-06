@@ -33,4 +33,9 @@ const playToDoNewItem = () => {
     newItemAudio.play()
 }
 
-export { playBreakAudio, playAtentionAudio, playErrorAudio, playFocusAudio, playtToDoAllCompleted, playToDoItemCompleted, playToDoNewItem }
+const playAchievementUnlocked = () => {
+    const newAchievement = new Audio('/sounds/achievement2.mp3')
+    newAchievement.play()
+}
+
+export { playBreakAudio, playAtentionAudio, playErrorAudio, playFocusAudio, playtToDoAllCompleted, playToDoItemCompleted, playToDoNewItem, playAchievementUnlocked }

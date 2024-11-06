@@ -8,9 +8,7 @@ import { Input } from "./ui/input";
 import { Switch } from "./ui/switch";
 import { useState, useEffect, useRef } from "react";
 
-interface SettingsProps {
-    settings: (settings: { mediaType: "Video" | "Playlist", URL: string, autoplay: boolean | undefined, index: number }) => void
-}
+import type { SettingsProps } from "@/types/types";
 
 export default function Settings({ settings }: SettingsProps) {
     const [type, setType] = useState<"Video" | "Playlist">()

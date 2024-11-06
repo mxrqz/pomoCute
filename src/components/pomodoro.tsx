@@ -1,59 +1,18 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Rubik_Mono_One, } from "next/font/google"
-import { Baloo_Paaji_2 } from "next/font/google"
 import { Clock, Coffee } from "lucide-react"
 
-import { usePomodoro } from "./PomodoroProvider"
-
-import { Button } from "./ui/button"
-import { playBreakAudio, playFocusAudio } from "./sounds"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
-import Ears from "./ears"
-
-const rubik = Rubik_Mono_One({
-    weight: ['400'],
-    subsets: ['latin']
-})
-
-const baloo = Baloo_Paaji_2({ subsets: ['latin'], display: 'swap' })
-
-interface Pomodoro {
-    selectedTime: (selectedTimer: { timer: number; break: number, cycles: number, longBreak: number }) => void;
-    // cyclesChange: (cycle: number) => void;
-    // isPomodoroActive: (isActive: boolean) => void
-}
-
-import { classic, extended, short, balanced } from "./PomodoroProvider"
-
-// const classic = {
-//     timer: 25,
-//     break: 5,
-//     cycles: 4,
-//     longBreak: 30
-// }
-
-// const short = {
-//     "timer": 15,
-//     "break": 3,
-//     "cycles": 5,
-//     "longBreak": 10
-// }
-
-// const extended = {
-//     "timer": 50,
-//     "break": 10,
-//     "cycles": 3,
-//     "longBreak": 20
-// }
-
-// const balanced = {
-//     "timer": 30,
-//     "break": 7,
-//     "cycles": 4,
-//     "longBreak": 20
-// }
+import { Button } from "@/components/ui/button"
+import { playBreakAudio, playFocusAudio } from "../functions/sounds"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Ears from "@/components/ears"
+import type { Pomodoro } from "@/types/types"
+import { classic, extended, short, balanced, usePomodoro } from "@/components/PomodoroProvider"
+import { rubik, baloo } from '@/fonts/fonts'
+import { updateTotalPomodoroTime, updatePomodoroCount } from "@/functions/statsHandle"
+import { checkAchievements } from "@/functions/achievementsHandle"
+import { newAchievement } from "./newAchievementNoti"
 
 type TimerOptions = 'classic' | 'short' | 'balanced' | 'extended';
 
@@ -65,12 +24,10 @@ const timers: Record<TimerOptions, { timer: number, break: number, cycles: numbe
 }
 
 export default function Pomodoro({ selectedTime }: Pomodoro) {
-    // const [selectedTimer, setSelectedTimer] = useState<{ timer: number, break: number, cycles: number, longBreak: number }>(classic)
-    const { setIsActive, setCycles, cycles, isActive, selectedTimer, setSelectedTimer } = usePomodoro();
-
-    const [timeLeft, setTimeLeft] = useState<number>(selectedTimer.timer * 60)
-    const [isBreak, setIsBreak] = useState<boolean>(false)
-
+    const { setIsActive, setCycles, cycles, isActive, selectedTimer, setSelectedTimer, timeLeft, setTimeLeft, isBreak, setIsBreak } = usePomodoro();
+    const [currentCycle, setCurrentCycle] = useState<number>(0)
+    // const [timeLeft, setTimeLeft] = useState<number>(selectedTimer.timer * 60)
+    // const [isBreak, setIsBreak] = useState<boolean>(false)
     const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0')
     const seconds = String(timeLeft % 60).padStart(2, '0')
 
@@ -95,8 +52,8 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
 
         if (isActive && timeLeft >= 0) {
             interval = setInterval(() => {
-                setTimeLeft((prevTime) => prevTime - 1)
-            }, 1000)
+                setTimeLeft(timeLeft - 1);
+            }, 1000);
         } else if (timeLeft === -1) {
             clearInterval(interval)
 
@@ -119,13 +76,30 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
                 playFocusAudio()
             }
         }
+
         return () => clearInterval(interval)
-    }, [isActive, timeLeft, isBreak, cycles, selectedTimer, setCycles])
+    }, [isActive, timeLeft, isBreak, cycles, selectedTimer, setCycles, setTimeLeft, setIsBreak])
 
     useEffect(() => {
         setTimeLeft(selectedTimer.timer * 60)
         selectedTime(selectedTimer);
-    }, [selectedTime, selectedTimer])
+    }, [selectedTime, selectedTimer, setTimeLeft])
+
+    useEffect(() => {
+        if (isActive && !isBreak && timeLeft % 60 === 0 && (timeLeft / 60) !== selectedTimer.timer) {
+            updateTotalPomodoroTime(1) // ta atualizando a cada minuto, ent adiciona 1 minuto ao total
+            const achievement = checkAchievements()
+            if (achievement) newAchievement(achievement)
+        }
+
+        if (currentCycle === selectedTimer.cycles && !isBreak) {
+            updatePomodoroCount()
+            const achievement = checkAchievements()
+            if (achievement) newAchievement(achievement)
+        }
+
+        setCurrentCycle(cycles)
+    }, [currentCycle, cycles, isActive, isBreak, selectedTimer.cycles, selectedTimer.timer, timeLeft])
 
     return (
         <div className="flex justify-center 2xl:gap-10">
@@ -168,7 +142,7 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
                     <Select
                         defaultValue="classic"
                         onValueChange={(value: TimerOptions) => setSelectedTimer(timers[value])}
-                        
+
                     >
                         <SelectTrigger className="text-sm 2xl:text-lg font-medium min-w-[150px]" aria-label="Selecione o tipo do Pomodoro">
                             <SelectValue placeholder={'Pomodoro'} />

@@ -1,15 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState } from 'react';
-
-interface PomodoroContextProps {
-    isActive: boolean;
-    cycles: number;
-    setIsActive: (isActive: boolean) => void;
-    setCycles: (cycles: number) => void;
-    selectedTimer: { timer: number, break: number, cycles: number, longBreak: number };
-    setSelectedTimer: (timer: { timer: number, break: number, cycles: number, longBreak: number }) => void;
-}
+import type { PomodoroContextProps } from "@/types/types";
 
 const classic = {
     timer: 25,
@@ -18,19 +10,19 @@ const classic = {
     longBreak: 30
 }
 
-const short = {
-    "timer": 15,
-    "break": 3,
-    "cycles": 5,
-    "longBreak": 10
-}
-
 // const short = {
-//     "timer": .05,
-//     "break": .05,
-//     "cycles": 2,
-//     "longBreak": .05
+//     "timer": 15,
+//     "break": 3,
+//     "cycles": 5,
+//     "longBreak": 10
 // }
+
+const short = {
+    "timer": .05,
+    "break": .05,
+    "cycles": 2,
+    "longBreak": .05
+}
 
 const extended = {
     "timer": 50,
@@ -60,12 +52,14 @@ export const PomodoroProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const [isActive, setIsActive] = useState(false);
     const [cycles, setCycles] = useState(0);
     const [selectedTimer, setSelectedTimer] = useState<{ timer: number, break: number, cycles: number, longBreak: number }>(classic)
+    const [timeLeft, setTimeLeft] = useState<number>(selectedTimer.timer * 60)
+    const [isBreak, setIsBreak] = useState<boolean>(false)
 
     return (
-        <PomodoroContext.Provider value={{ isActive, cycles, setIsActive, setCycles, selectedTimer, setSelectedTimer }}>
+        <PomodoroContext.Provider value={{ isActive, cycles, setIsActive, setCycles, selectedTimer, setSelectedTimer, timeLeft, setTimeLeft, isBreak, setIsBreak}}>
             {children}
         </PomodoroContext.Provider>
     );
 };
 
-export {classic, short, extended, balanced}
+export { classic, short, extended, balanced }

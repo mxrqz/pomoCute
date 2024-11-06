@@ -10,9 +10,10 @@ import Tasks from "@/components/tasks";
 import QuickNotes from "@/components/quick-notes";
 // import Settings from "@/components/settings";
 import YtIframe from "@/components/ytIframe";
-import UserExp from "@/components/user-exp";
+import UserData from "@/components/user-data";
 import { PomodoroProvider } from "@/components/PomodoroProvider";
 import Stats from "@/components/stats";
+import { Toaster } from "@/components/ui/sonner"
 
 // const type = "Video"
 const URL = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
@@ -58,7 +59,7 @@ export default function Home() {
             {/* <Settings settings={handleSettings} /> */}
             <ModeToggle />
 
-            <UserExp />
+            <UserData />
           </div>
         </nav>
 
@@ -81,16 +82,17 @@ export default function Home() {
             <QuickNotes />
           </div>
         </section>
+
+        <footer className={`w-full flex flex-col justify-center items-center bg-foreground/10 text-muted-foreground py-5 sm:px12 lg:px-32 2xl:px-64`}>
+          <span>Mantenha o foco e aumente sua produtividade com a Técnica Pomodoro.</span>
+          <span className="inline-flex">
+            <Clock className="mr-2" />
+            {timer?.timer} minutos de trabalho, {timer?.break} minutos de pausa, {timer?.longBreak} minutos de pausa longa após {timer?.cycles} ciclos.
+          </span>
+        </footer>
       </PomodoroProvider>
 
-
-      <footer className={`w-full flex flex-col justify-center items-center bg-foreground/10 text-muted-foreground py-5 sm:px12 lg:px-32 2xl:px-64`}>
-        <span>Mantenha o foco e aumente sua produtividade com a Técnica Pomodoro.</span>
-        <span className="inline-flex">
-          <Clock className="mr-2" />
-          {timer?.timer} minutos de trabalho, {timer?.break} minutos de pausa, {timer?.longBreak} minutos de pausa longa após {timer?.cycles} ciclos.
-        </span>
-      </footer>
+      <Toaster />
     </>
   );
 }
