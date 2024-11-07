@@ -1,14 +1,14 @@
 "use client"
 
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { Notes } from "@/types/types";
 
 import { stats, updateQuickNotesCount } from "@/functions/statsHandle";
 
+import { newAchievement } from "@/components/newAchievementNoti";
 import Note from "@/components/note";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { newAchievement } from "@/components/newAchievementNoti";
 
 import { checkAchievements } from "@/functions/achievementsHandle";
 
