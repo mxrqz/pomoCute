@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { Pencil, Plus, Save, Trash2 } from "lucide-react"
+import { Eye, Pencil, Plus, Trash2 } from "lucide-react"
 import { nanoid } from 'nanoid'
+import { useEffect, useState } from "react"
 
 import Markdown from 'react-markdown'
 import rehypeFormat from 'rehype-format'
@@ -16,42 +16,50 @@ import remarkMath from 'remark-math'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Textarea } from "@/components/ui/textarea"
+import { Toggle } from "@/components/ui/toggle"
 
-import type { Notes, Note } from '@/types/types'
-
-// Dps deixar o usuario editar o titulo e descrição de uma nota ja criada
+import type { Note, Notes } from '@/types/types'
 
 export default function Note({ id, title, description, content, notes, returnFunction }: Note) {
-    // const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false)
-    // const [isEditingDesc, setIsEditingDesc] = useState<boolean>(false)
     const [isEditing, setIsEditing] = useState<boolean>(content ? false : true)
     const [currentTitle, setCurrentTitle] = useState<string>('')
     const [currentDescription, setCurrentDescription] = useState<string>('')
     const [currentNoteText, setCurrentNoteText] = useState<string>(content ? content : '')
 
     const handleSave = () => {
-        if (returnFunction && currentTitle && currentDescription && currentNoteText) {
+        const oldNotes = localStorage.getItem('notes')
+        const parsedNotes: Notes[] = oldNotes ? JSON.parse(oldNotes) : []
+        const newId = nanoid(5)
+        let noteExists = false;
+
+        for (const note of parsedNotes) {
+            if (note.id === id) {
+                note.content = currentNoteText;
+                note.description = currentDescription;
+                note.title = currentTitle;
+                noteExists = true;
+                break;
+            }
+        }
+
+        if (!noteExists && currentTitle && currentDescription && currentNoteText) {
             const newNote = {
-                id: nanoid(5),
+                id: newId,
                 title: currentTitle,
                 description: currentDescription,
                 content: currentNoteText
-            }
+            };
+            parsedNotes.push(newNote);
+        }
 
-            const oldNotes = localStorage.getItem('notes')
-            const parsedNotes: Notes[] = oldNotes ? JSON.parse(oldNotes) : []
-
-            const notes: Notes[] = oldNotes ? [...parsedNotes, newNote] : [newNote]
-
-            returnFunction(notes)
-
-            resetStates()
+        if (returnFunction) {
+            returnFunction(parsedNotes)
         }
     }
 
@@ -71,10 +79,23 @@ export default function Note({ id, title, description, content, notes, returnFun
         setCurrentTitle('')
         setCurrentDescription('')
         setCurrentNoteText('')
+        setIsEditing(content ? false : true)
+    }
+
+    useEffect(() => {
+        if (title && description && content) {
+            setCurrentTitle(title)
+            setCurrentDescription(description)
+            setCurrentNoteText(content)
+        }
+    }, [description, title, content])
+
+    const handleOpenChange = (open: boolean) => {
+        if (!open) resetStates()
     }
 
     return (
-        <Sheet>
+        <Sheet onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>
                 {title && description ? (
                     <div className="w-full h-fit inline-flex items-center justify-between relative">
@@ -103,109 +124,85 @@ export default function Note({ id, title, description, content, notes, returnFun
             </SheetTrigger>
 
             <SheetContent className="flex flex-col gap-5 min-w-[450px]">
-                <SheetHeader className="space-y-0">
-                    {title && description ? (
-                        <>
-                            {/* {isEditingTitle ? (
-                                <SheetTitle className="space-y-1">
-                                    <Label htmlFor="titulo" className="text-lg font-semibold text-foreground">Título:</Label>
-                                    <Input
-                                        autoFocus
-                                        id="titulo"
-                                        placeholder="Adicione o título da tarefa"
-                                        value={currentTitle}
-                                        onChange={(e) => setCurrentTitle(e.currentTarget.value)}
-                                    />
-                                </SheetTitle>
-                            ) : (
-                            )} */}
-                                <SheetTitle className="group">
-                                    {title}
-                                    {/* <Pencil size={16} className="opacity-100 group-hover:opacity-100" /> */}
-                                </SheetTitle>
+                <div className="inline-flex justify-between gap-2 items-center mt-2">
+                    <div className="inline-flex items-center gap-2">
+                        {isEditing ? (
+                            <Pencil size={16} />
+                        ) : (
+                            <Eye size={16} />
+                        )}
+                        <span>Modo de {isEditing ? 'Edição' : 'Visualização'}</span>
+                    </div>
 
-                            {/* {isEditingDesc ? (
-                                <SheetDescription className="space-y-1">
-                                    <Label htmlFor="descrição" className="text-sm text-muted-foreground">Descrição:</Label>
-                                    <Input
-                                        id="descrição"
-                                        placeholder="Adicione a descrição da tarefa"
-                                        value={currentDescription}
-                                        onChange={(e) => setCurrentDescription(e.currentTarget.value)}
-                                    />
-                                </SheetDescription>
-                            ) : (
-                            )} */}
-                            <SheetDescription>{description}</SheetDescription>
+                    <Toggle
+                        className="inline-flex gap-2 items-center"
+                        pressed={isEditing}
+                        variant={"outline"}
+                        onPressedChange={setIsEditing}
+                    >
+                        {isEditing ? (
+                            "Visualizar"
+                        ) : (
+                            "Editar"
+                        )}
+                    </Toggle>
+                </div>
+
+                <SheetHeader>
+                    {isEditing ? (
+                        <>
+                            <Input
+                                autoFocus
+                                placeholder="Adicione o título da tarefa"
+                                value={currentTitle ? currentTitle : title}
+                                onChange={(e) => setCurrentTitle(e.target.value)}
+                                className="text-lg font-semibold"
+                            />
+                            <SheetTitle></SheetTitle>
                         </>
                     ) : (
-                        <div className="space-y-2">
-                            <SheetTitle className="space-y-1">
-                                <Label htmlFor="titulo" className="text-lg font-semibold text-foreground">Título:</Label>
-                                <Input
-                                    autoFocus
-                                    id="titulo"
-                                    placeholder="Adicione o título da tarefa"
-                                    value={currentTitle}
-                                    onChange={(e) => setCurrentTitle(e.currentTarget.value)}
-                                />
-                            </SheetTitle>
-
-                            <SheetDescription className="space-y-1">
-                                <Label htmlFor="descrição" className="text-sm text-muted-foreground">Descrição:</Label>
-                                <Input
-                                    id="descrição"
-                                    placeholder="Adicione a descrição da tarefa"
-                                    value={currentDescription}
-                                    onChange={(e) => setCurrentDescription(e.currentTarget.value)}
-                                />
-                            </SheetDescription>
-                        </div>
+                        <SheetTitle>{currentTitle ? currentTitle : (title ? title : '')}</SheetTitle>
+                    )}
+                    {isEditing ? (
+                        <>
+                            <Input
+                                placeholder="Adicione a descrição da tarefa"
+                                value={currentDescription ? currentDescription : description}
+                                onChange={(e) => setCurrentDescription(e.target.value)}
+                                className="text-sm text-muted-foreground"
+                            />
+                            <SheetDescription></SheetDescription>
+                        </>
+                    ) : (
+                        <SheetDescription>{currentDescription ? currentDescription : (description ? description : '')}</SheetDescription>
                     )}
                 </SheetHeader>
 
-                <div className="flex flex-col gap-1 h-full overflow-hidden">
-                    <Label htmlFor="text-input" className="text-md">Nota:</Label>
+                <div className="flex flex-col gap-2 h-full overflow-hidden">
+                    <div className="inline-flex items-center justify-between">
+                        <Label htmlFor="text-input" className="text-md">Nota:</Label>
+                    </div>
 
                     <ScrollArea className="w-full border rounded-md h-full p-2 relative group focus-within:border-ring">
                         {isEditing ? (
-                            <>
-                                <div className="inline-flex absolute top-2 right-2 z-10">
-                                    <Button className="inline-flex gap-2 focus-visible:ring-red-500 opacity-0 focus-visible:opacity-100 group-hover:opacity-100 transition-opacity duration-300"
-                                        onClick={() => setIsEditing(false)}
-                                        aria-label="Salvar edição da nota"
-                                    >
-                                        <Save size={16} className="shrink-0" />
-                                        Salvar
-                                    </Button>
-                                </div>
-
-                                <Textarea
-                                    id="text-input"
-                                    className="w-full h-full border-none p-0 py-0 focus-visible:ring-0"
-                                    value={currentNoteText}
-                                    onChange={(e) => setCurrentNoteText(e.currentTarget.value)}
-                                />
-                            </>
+                            <Textarea
+                                placeholder="Adicione sua nota"
+                                id="text-input"
+                                className="w-full h-full border-none p-0 py-0 focus-visible:ring-0"
+                                value={currentNoteText ? currentNoteText : (content ? content : '')}
+                                onChange={(e) => setCurrentNoteText(e.currentTarget.value)}
+                            />
                         ) : (
-                            <>
-                                <div className="inline-flex absolute top-2 right-2 z-10">
-                                    <Button className="inline-flex gap-2 focus-visible:ring-red-500 opacity-0 focus-visible:opacity-100 group-hover:opacity-100 transition-opacity duration-300"
-                                        onClick={() => setIsEditing(true)}
-                                        aria-label="Editar nota rápida"
-                                    >
-                                        <Pencil size={16} className="shrink-0" />
-                                        Editar
-                                    </Button>
-                                </div>
-
-                                <Markdown className="prose dark:prose-invert"
-                                    remarkPlugins={[remarkGfm, remarkMath, remarkParse, remarkFrontmatter, remarkDirective, remarkDirective, remarkRehype]}
-                                    rehypePlugins={[rehypeStringify, rehypeRaw, rehypeFormat, rehypeSanitize]}
-                                >
-                                    {currentNoteText}
-                                </Markdown>
-                            </>
+                            <Markdown className="prose dark:prose-invert 
+                                prose-code:bg-muted prose-code:rounded-md prose-code:px-[0.4em] prose-code:py-[0.2em] prose-code:font-normal
+                                prose-code:before:content-[''] prose-code:after:content-['']
+                                prose-td:border prose-td:text-center prose-th:border prose-th:text-center
+                            "
+                                remarkPlugins={[remarkGfm, remarkMath, remarkParse, remarkFrontmatter, remarkDirective, remarkDirective, remarkRehype]}
+                                rehypePlugins={[rehypeStringify, rehypeRaw, rehypeFormat, rehypeSanitize]}
+                            >
+                                {currentNoteText ? currentNoteText : content}
+                            </Markdown>
                         )}
                     </ScrollArea>
                 </div>

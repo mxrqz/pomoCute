@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 
 import type { Notes } from "@/types/types";
 
-import { updateQuickNotesCount } from "@/functions/statsHandle";
+import { stats, updateQuickNotesCount } from "@/functions/statsHandle";
 
 import Note from "@/components/note";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,19 +12,32 @@ import { newAchievement } from "@/components/newAchievementNoti";
 
 import { checkAchievements } from "@/functions/achievementsHandle";
 
+const defaultNote = {
+    id: 'firtsNote',
+    "title": "Bem-vindo ao PomoCute!",
+    "description": "Primeira nota de exemplo para ajudar você a organizar suas ideias.",
+    "content": "# Dicas para Usar o PomoCute 🐱\n\nOlá! Esta é sua primeira nota no PomoCute. Você pode formatar seu texto usando **Markdown** para deixá-lo mais organizado e estilizado.\n\n## Exemplos de Markdown\n\n- **Negrito**: Use `**palavra**` para negrito.\n- _Itálico_: Use `_palavra_` para itálico.\n- [Links](https://pomocute.com): Use `[texto](url)` para links.\n\n### Organize suas ideias!\n\n- Crie listas de tarefas\n- Mantenha notas importantes\n- Personalize seu Pomodoro com música e estatísticas\n\nAproveite e seja produtivo! 😊"
+}
+
 export default function QuickNotes() {
-    const lastTaskRef = useRef<HTMLLIElement>(null)
+    // const lastTaskRef = useRef<HTMLLIElement>(null)
     const [notes, setNotes] = useState<Notes[]>()
 
-    useEffect(() => {
-        if (lastTaskRef.current) {
-            lastTaskRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (lastTaskRef.current) {
+    //         lastTaskRef.current.scrollIntoView({ behavior: 'smooth' });
+    //     }
+    // }, []);
 
     useEffect(() => {
         const notesString = localStorage.getItem('notes')
         if (notesString) setNotes(JSON.parse(notesString))
+        else {
+            const statistics = stats()
+            if (statistics.quickNotes === 0) {
+                setNotes([defaultNote])
+            }
+        }
     }, [])
 
     const handleReturnFunction = (newNotes: Notes[]) => {
