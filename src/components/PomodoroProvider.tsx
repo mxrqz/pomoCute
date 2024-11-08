@@ -10,19 +10,19 @@ const classic = {
     longBreak: 30
 }
 
-// const short = {
-//     "timer": 15,
-//     "break": 3,
-//     "cycles": 5,
-//     "longBreak": 10
-// }
-
 const short = {
-    "timer": .05,
-    "break": .05,
-    "cycles": 2,
-    "longBreak": .05
+    "timer": 15,
+    "break": 3,
+    "cycles": 5,
+    "longBreak": 10
 }
+
+// const short = {
+//     "timer": .05,
+//     "break": .05,
+//     "cycles": 2,
+//     "longBreak": .05
+// }
 
 const extended = {
     "timer": 50,
