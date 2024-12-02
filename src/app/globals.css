@@ -71,10 +71,10 @@
   }
 
   html {
-    @apply h-[100dvh];
+    @apply h-fit md:h-screen;
   }
 
   body {
-    @apply bg-background text-foreground h-[100dvh];
+    @apply bg-background text-foreground h-fit md:h-screen;
   }
 }

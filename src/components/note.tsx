@@ -98,9 +98,9 @@ export default function Note({ id, title, description, content, notes, returnFun
         <Sheet onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>
                 {title && description ? (
-                    <div className="w-full h-fit inline-flex items-center justify-between relative">
-                        <Button variant={"outline"} className="h-fit w-full text-start focus-visible:border focus-visible:border-ring focus-visible:ring-0" aria-label={`Abrir nota rápida ${title}`}>
-                            <div className="w-full">
+                    <div className="w-full h-fit grid grid-cols-[85%,15%] items-center rounded-md border focus-visible:border focus-visible:border-ring focus-visible:ring-0 relative">
+                        <Button variant={"outline"} className="border-none h-fit w-full flex justify-start text-start " aria-label={`Abrir nota rápida ${title}`}>
+                            <div className="w-full overflow-hidden">
                                 <span className="font-semibold text-lg">{title}</span>
                                 <span className="text-sm text-muted-foreground line-clamp-1">{description}</span>
                             </div>
@@ -108,7 +108,7 @@ export default function Note({ id, title, description, content, notes, returnFun
 
                         <Button
                             aria-label={`Deletar nota rápida ${title}`}
-                            className="absolute right-2 bg-transparent group hover:bg-red-500 focus-visible:ring-red-500"
+                            className="right-2 bg-transparent group hover:bg-red-500 focus-visible:ring-red-500"
                             variant={"outline"}
                             size={"icon"}
                             onClick={(e) => handleDelete(e)}
@@ -123,7 +123,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                 )}
             </SheetTrigger>
 
-            <SheetContent className="flex flex-col gap-5 min-w-[450px]">
+            <SheetContent className="flex flex-col gap-5 w-[80%] md:w-[40%]">
                 <div className="inline-flex justify-between gap-2 items-center mt-2">
                     <div className="inline-flex items-center gap-2">
                         {isEditing ? (

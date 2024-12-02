@@ -51,19 +51,18 @@ export default function Home() {
   return (
     <>
       <PomodoroProvider>
-        <nav className="flex items-center justify-between py-2 sm:px12 lg:px-32 2xl:px-64">
+        <nav className="flex items-center justify-between py-2 px-[clamp(1rem,11vw,16rem)]">
           <h2 className="text-3xl font-semibold tracking-tight">PomoCute</h2>
 
-          <div className="inline-flex gap-5">
+          <div className="md:inline-flex gap-5 hidden">
             <Stats />
-            {/* <Settings settings={handleSettings} /> */}
             <ModeToggle />
 
             <UserData />
           </div>
         </nav>
 
-        <section className="w-full h-full overflow-hidden flex justify-between gap-10 py-5 sm:px12 lg:px-32 2xl:px-64">
+        <section className="w-full h-full md:overflow-hidden flex flex-col md:flex-row justify-between gap-10 py-5 px-[clamp(1rem,11vw,16rem)]">
           <div className="w-full flex flex-col gap-10">
             <Pomodoro selectedTime={handleSelectedTime} />
 
@@ -72,9 +71,10 @@ export default function Home() {
             )}
           </div>
 
-          <Separator orientation="vertical" />
+          <Separator orientation="vertical" className="hidden md:inline-block" />
+          <Separator orientation="horizontal" className="inline-block md:hidden" />
 
-          <div className="w-full h-full grid grid-rows-[1fr,2px,1fr] overflow-hidden gap-10">
+          <div className="w-full h-full grid grid-rows-[1fr,2px,1fr] lg:overflow-hidden gap-10">
             <Tasks />
 
             <Separator />
@@ -83,13 +83,13 @@ export default function Home() {
           </div>
         </section>
 
-        <footer className={`w-full flex flex-col justify-center items-center bg-foreground/10 text-muted-foreground py-5 sm:px12 lg:px-32 2xl:px-64`}>
+        {/* <footer className={`w-full flex flex-col justify-center items-center bg-foreground/10 text-muted-foreground py-5 px-[clamp(1rem,11vw,16rem)]`}>
           <span>Mantenha o foco e aumente sua produtividade com a Técnica Pomodoro.</span>
           <span className="inline-flex">
             <Clock className="mr-2" />
             {timer?.timer} minutos de trabalho, {timer?.break} minutos de pausa, {timer?.longBreak} minutos de pausa longa após {timer?.cycles} ciclos.
           </span>
-        </footer>
+        </footer> */}
       </PomodoroProvider>
 
       <Toaster />

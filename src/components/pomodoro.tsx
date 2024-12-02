@@ -102,29 +102,29 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
     }, [currentCycle, cycles, isActive, isBreak, selectedTimer.cycles, selectedTimer.timer, timeLeft])
 
     return (
-        <div className="flex justify-center 2xl:gap-10">
-            <div className="flex flex-col gap-5 items-center relative ">
+        <div className="flex justify-center">
+            <div className="flex flex-col items-center relative ">
                 <Ears className="w-32 2xl:w-96 h-fit fill-foreground" />
 
-                <div className="flex flex-col gap-5 items-center">
+                <div className="flex flex-col items-center">
                     <div className="flex flex-col items-center">
-                        <div className={`h-fit text-9xl leading-none font-mono ${rubik.className} flex items-center text-center`}>
+                        <div className={`h-fit text-[clamp(0.45rem,9vw,12rem)] leading-none font-mono ${rubik.className} flex items-center text-center`}>
                             <span>{minutes}</span>
                             <span>:</span>
                             <span>{seconds}</span>
                         </div>
 
-                        <span className={`text-2xl 2xl:text-5xl text-muted-foreground font-medium ${baloo.className}`}>{isBreak ? 'Momento de Pausa' : 'Momento de Foco'}</span>
+                        <span className={`text-[clamp(0.45rem,4vw,5rem)] text-muted-foreground font-medium ${baloo.className}`}>{isBreak ? 'Momento de Pausa' : 'Momento de Foco'}</span>
                     </div>
 
-                    <div className={`flex items-center gap-5 text-sm 2xl:text-lg text-muted-foreground`}>
+                    <div className={`flex items-center gap-5 text-[clamp(0.45rem,1.5vw,5rem)] text-muted-foreground`}>
                         <span className={`inline-flex items-center gap-1`}>
-                            <Clock size={24} />
+                            <Clock className="size-[clamp(0.45rem,1.5vw,5rem)]" />
                             Ciclo {cycles} de {selectedTimer.cycles}
                         </span>
 
                         <span className={`inline-flex items-center gap-1`}>
-                            <Coffee size={24} />
+                            <Coffee className="size-[clamp(0.45rem,1.5vw,5rem)]" />
                             Proxima pausa: {cycles + 1 === selectedTimer.cycles ? `${selectedTimer.longBreak} minutos` : `${selectedTimer.break} minutos`}
                         </span>
                     </div>

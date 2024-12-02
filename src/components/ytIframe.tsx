@@ -33,8 +33,6 @@ export default function YtIframe({ videoURL }: YtIframeProps) {
         if (videoMatch) {
             return videoMatch[1]
         }
-
-
         return "jfKfPfyJRdk";
     }
 
@@ -195,7 +193,7 @@ export default function YtIframe({ videoURL }: YtIframeProps) {
                                 <span className="sr-only">Botão para silenciar a música</span>
                             </Label>
 
-                            <Slider id="Volume" className="w-32"
+                            <Slider id="Volume" className="w-16 md:w-32"
                                 aria-label="Barra de volume da música"
                                 onValueChange={(e) => { setVolume(e[0]); youtubePlayer.current.setVolume(e[0]) }}
                                 defaultValue={[33]}
