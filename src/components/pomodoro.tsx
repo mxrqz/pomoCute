@@ -104,7 +104,7 @@ export default function Pomodoro({ selectedTime }: Pomodoro) {
     return (
         <div className="flex justify-center">
             <div className="flex flex-col items-center relative ">
-                <Ears className="w-32 2xl:w-96 h-fit fill-foreground" />
+                <Ears className="w-32 xl:w-96 h-fit fill-foreground" />
 
                 <div className="flex flex-col items-center">
                     <div className="flex flex-col items-center">

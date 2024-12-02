@@ -63,7 +63,7 @@ export default function Home() {
         </nav>
 
         <section className="w-full h-full md:overflow-hidden flex flex-col md:flex-row justify-between gap-10 py-5 px-[clamp(1rem,11vw,16rem)]">
-          <div className="w-full flex flex-col gap-10">
+          <div className="w-full flex flex-col gap-5">
             <Pomodoro selectedTime={handleSelectedTime} />
 
             {URL && (
@@ -83,13 +83,13 @@ export default function Home() {
           </div>
         </section>
 
-        {/* <footer className={`w-full flex flex-col justify-center items-center bg-foreground/10 text-muted-foreground py-5 px-[clamp(1rem,11vw,16rem)]`}>
+        <footer className={`w-full flex flex-col justify-center items-center bg-foreground/10 text-muted-foreground py-5 px-[clamp(1rem,11vw,16rem)]`}>
           <span>Mantenha o foco e aumente sua produtividade com a Técnica Pomodoro.</span>
           <span className="inline-flex">
             <Clock className="mr-2" />
             {timer?.timer} minutos de trabalho, {timer?.break} minutos de pausa, {timer?.longBreak} minutos de pausa longa após {timer?.cycles} ciclos.
           </span>
-        </footer> */}
+        </footer>
       </PomodoroProvider>
 
       <Toaster />

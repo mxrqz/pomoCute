@@ -155,7 +155,7 @@ export default function YtIframe({ videoURL }: YtIframeProps) {
             />
 
             {musicDetails && (
-                <div className="flex flex-col gap-5 w-full">
+                <div className="flex flex-col gap-1 w-full">
                     <div className="inline-flex items-start">
                         <div className="flex gap-5 w-full">
                             {/* <Music size={48} /> */}
@@ -232,7 +232,6 @@ export default function YtIframe({ videoURL }: YtIframeProps) {
                     </div>
                 </div>
             )}
-
         </>
     )
 }
