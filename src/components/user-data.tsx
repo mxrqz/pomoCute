@@ -133,7 +133,7 @@ export default function UserData() {
 
     return (
         <Popover>
-            <PopoverTrigger className="inline-flex max-h-9 h-9 gap-3 items-center cursor-pointer border rounded-md px-2 hover:bg-accent group transition-colors relative">
+            <PopoverTrigger className="inline-flex w-32 max-h-9 h-9 gap-3 items-center cursor-pointer border rounded-md px-2 hover:bg-accent group transition-colors relative">
                 <Avatar className="size-6 aspect-square rounded-full inline-flex items-center justify-center">
                     <AvatarImage src={profile?.image} alt="Imagem de perfil do usuário" width={24} height={24} />
                     <AvatarFallback>{profile?.name.slice(0, 1)}</AvatarFallback>

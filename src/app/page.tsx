@@ -3,7 +3,7 @@
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import Pomodoro from "@/components/pomodoro";
 
-import { Clock } from "lucide-react";
+import { Clock, Menu } from "lucide-react";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import Tasks from "@/components/tasks";
@@ -14,6 +14,7 @@ import UserData from "@/components/user-data";
 import { PomodoroProvider } from "@/components/PomodoroProvider";
 import Stats from "@/components/stats";
 import { Toaster } from "@/components/ui/sonner"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 // const type = "Video"
 const URL = "https://www.youtube.com/watch?v=jfKfPfyJRdk"
@@ -56,10 +57,25 @@ export default function Home() {
 
           <div className="md:inline-flex gap-5 hidden">
             <Stats />
+
             <ModeToggle />
 
             <UserData />
           </div>
+
+          <Sheet>
+            <SheetTrigger className="flex flex-col md:hidden">
+              <Menu />
+            </SheetTrigger>
+
+            <SheetContent className="flex flex-col">
+              <UserData />
+
+              <Stats />
+
+              <ModeToggle />
+            </SheetContent>
+          </Sheet>
         </nav>
 
         <section className="w-full h-full md:overflow-hidden flex flex-col md:flex-row justify-between gap-10 py-5 px-[clamp(1rem,11vw,16rem)]">
