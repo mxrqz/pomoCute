@@ -9,6 +9,17 @@ const config: Config = {
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 	],
+	safelist: [
+		// Incluir classes de tema customizado para garantir que sejam compiladas
+		'ocean',
+		'forest',
+		'sunset',
+		'lavender',
+		'coffee',
+		'coral',
+		'midnight',
+		'forest-green'
+	],
 	theme: {
 		extend: {
 			colors: {

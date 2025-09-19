@@ -52,12 +52,12 @@ export default function QuickNotes() {
     }
 
     return (
-        <div className="w-full flex flex-col gap-5 items-center overflow-hidden">
-            <h3 className="text-3xl font-bold">Notas Rápidas</h3>
+        <div className="w-full flex flex-col gap-3 sm:gap-4 md:gap-5 items-center overflow-hidden">
+            <h3 className="text-2xl sm:text-3xl font-bold text-primary">Notas Rápidas</h3>
 
-            <div className="flex flex-col gap-5 justify-between w-full h-full overflow-hidden">
+            <div className="flex flex-col gap-3 sm:gap-4 md:gap-5 justify-between w-full h-full overflow-hidden">
                 <ScrollArea className="w-full h-full">
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 sm:gap-3">
                         {notes?.map((note, index) => (
                             <Note
                                 key={index}

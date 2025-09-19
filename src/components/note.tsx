@@ -4,17 +4,7 @@ import { Eye, Pencil, Plus, Trash2 } from "lucide-react"
 import { nanoid } from 'nanoid'
 import { useEffect, useState } from "react"
 
-import Markdown from 'react-markdown'
-import rehypeFormat from 'rehype-format'
-import rehypeRaw from 'rehype-raw'
-import rehypeSanitize from 'rehype-sanitize'
-import rehypeStringify from 'rehype-stringify'
-import remarkDirective from 'remark-directive'
-import remarkFrontmatter from 'remark-frontmatter'
-import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
+import { SimpleMarkdown } from '@/components/ui/simple-markdown'
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -101,7 +91,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                     <div className="w-full h-fit grid grid-cols-[85%,15%] items-center rounded-md border focus-visible:border focus-visible:border-ring focus-visible:ring-0 relative">
                         <Button variant={"outline"} className="border-none h-fit w-full flex justify-start text-start " aria-label={`Abrir nota rápida ${title}`}>
                             <div className="w-full overflow-hidden">
-                                <span className="font-semibold text-lg">{title}</span>
+                                <span className="font-semibold text-lg text-primary">{title}</span>
                                 <span className="text-sm text-muted-foreground line-clamp-1">{description}</span>
                             </div>
                         </Button>
@@ -131,7 +121,7 @@ export default function Note({ id, title, description, content, notes, returnFun
                         ) : (
                             <Eye size={16} />
                         )}
-                        <span>Modo de {isEditing ? 'Edição' : 'Visualização'}</span>
+                        <span className="text-primary">Modo de {isEditing ? 'Edição' : 'Visualização'}</span>
                     </div>
 
                     <Toggle
@@ -180,7 +170,7 @@ export default function Note({ id, title, description, content, notes, returnFun
 
                 <div className="flex flex-col gap-2 h-full overflow-hidden">
                     <div className="inline-flex items-center justify-between">
-                        <Label htmlFor="text-input" className="text-md">Nota:</Label>
+                        <Label htmlFor="text-input" className="text-md text-primary">Nota:</Label>
                     </div>
 
                     <ScrollArea className="w-full border rounded-md h-full p-2 relative group focus-within:border-ring">
@@ -193,16 +183,9 @@ export default function Note({ id, title, description, content, notes, returnFun
                                 onChange={(e) => setCurrentNoteText(e.currentTarget.value)}
                             />
                         ) : (
-                            <Markdown className="prose dark:prose-invert 
-                                prose-code:bg-muted prose-code:rounded-md prose-code:px-[0.4em] prose-code:py-[0.2em] prose-code:font-normal
-                                prose-code:before:content-[''] prose-code:after:content-['']
-                                prose-td:border prose-td:text-center prose-th:border prose-th:text-center
-                            "
-                                remarkPlugins={[remarkGfm, remarkMath, remarkParse, remarkFrontmatter, remarkDirective, remarkDirective, remarkRehype]}
-                                rehypePlugins={[rehypeStringify, rehypeRaw, rehypeFormat, rehypeSanitize]}
-                            >
-                                {currentNoteText ? currentNoteText : content}
-                            </Markdown>
+                            <SimpleMarkdown className="text-sm">
+                                {currentNoteText ? currentNoteText : content || ''}
+                            </SimpleMarkdown>
                         )}
                     </ScrollArea>
                 </div>

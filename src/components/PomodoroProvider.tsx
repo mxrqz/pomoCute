@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { PomodoroContextProps } from "@/types/types";
 
 const classic = {
@@ -52,8 +52,16 @@ export const PomodoroProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const [isActive, setIsActive] = useState(false);
     const [cycles, setCycles] = useState(0);
     const [selectedTimer, setSelectedTimer] = useState<{ timer: number, break: number, cycles: number, longBreak: number }>(classic)
-    const [timeLeft, setTimeLeft] = useState<number>(selectedTimer.timer * 60)
+    const [timeLeft, setTimeLeft] = useState<number>(classic.timer * 60)
     const [isBreak, setIsBreak] = useState<boolean>(false)
+
+    // Only sync timeLeft when timer preset actually changes
+    useEffect(() => {
+        // Reset to new timer duration when timer type changes
+        setTimeLeft(selectedTimer.timer * 60);
+        setIsBreak(false);
+        setCycles(0);
+    }, [selectedTimer.timer]); // Only depend on the timer value, not the whole object
 
     return (
         <PomodoroContext.Provider value={{ isActive, cycles, setIsActive, setCycles, selectedTimer, setSelectedTimer, timeLeft, setTimeLeft, isBreak, setIsBreak}}>

@@ -157,18 +157,18 @@ export default function YtIframe({ videoURL }: YtIframeProps) {
             {musicDetails && (
                 <div className="flex flex-col gap-1 w-full">
                     <div className="inline-flex items-start">
-                        <div className="flex gap-5 w-full">
+                        <div className="flex gap-3 sm:gap-5 w-full">
                             {/* <Music size={48} /> */}
 
                             {isPaused ? (
-                                <Play size={48} onClick={play} cursor={"pointer"} className="shrink-0" />
+                                <Play size={40} onClick={play} cursor={"pointer"} className="shrink-0 sm:w-12 sm:h-12" />
                             ) : (
-                                <Pause size={48} onClick={pause} cursor={"pointer"} className="shrink-0" />
+                                <Pause size={40} onClick={pause} cursor={"pointer"} className="shrink-0 sm:w-12 sm:h-12" />
                             )}
 
-                            <div className="flex flex-col">
-                                <span className="font-bold line-clamp-2">{musicDetails.title}</span>
-                                <span className="font-semibold text-muted-foreground line-clamp-1">{musicDetails.author}</span>
+                            <div className="flex flex-col min-w-0 flex-1">
+                                <span className="font-bold line-clamp-2 text-sm sm:text-base">{musicDetails.title}</span>
+                                <span className="font-semibold text-muted-foreground line-clamp-1 text-xs sm:text-sm">{musicDetails.author}</span>
                             </div>
                         </div>
 
@@ -193,7 +193,7 @@ export default function YtIframe({ videoURL }: YtIframeProps) {
                                 <span className="sr-only">Botão para silenciar a música</span>
                             </Label>
 
-                            <Slider id="Volume" className="w-16 md:w-32"
+                            <Slider id="Volume" className="w-12 sm:w-16 md:w-32"
                                 aria-label="Barra de volume da música"
                                 onValueChange={(e) => { setVolume(e[0]); youtubePlayer.current.setVolume(e[0]) }}
                                 defaultValue={[33]}

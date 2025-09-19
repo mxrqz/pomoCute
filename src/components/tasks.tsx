@@ -89,12 +89,12 @@ export default function Tasks() {
     }, [tasks, isInitialized]);
 
     return (
-        <div className="w-full h-full flex flex-col gap-5 items-center p-0 overflow-hidden">
-            <h3 className="text-3xl font-bold">Tarefas Diárias</h3>
+        <div className="w-full h-full flex flex-col gap-3 sm:gap-4 md:gap-5 items-center p-0 overflow-hidden">
+            <h3 className="text-2xl sm:text-3xl font-bold text-primary">Tarefas Diárias</h3>
 
             <div className="w-full h-full flex flex-col gap-2 justify-between overflow-hidden">
                 <ScrollArea className="w-full">
-                    <ul className="w-full flex flex-col gap-5">
+                    <ul className="w-full flex flex-col gap-3 sm:gap-4 md:gap-5">
                         {tasks.map((task, index) => (
                             <li key={index} className="flex flex-col gap-1" ref={index === tasks.length - 1 ? lastTaskRef : null}>
                                 <div className="inline-flex items-center gap-2 w-full">

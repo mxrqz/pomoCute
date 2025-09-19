@@ -6,6 +6,8 @@
 .pnp.js
 .yarn/install-state.gz
 
+CLAUDE.md
+
 # testing
 /coverage
 
@@ -34,3 +36,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# PWA files
+/public/sw.js
+/public/workbox-*.js
+/public/worker-*.js
+/public/sw.js.map
+/public/workbox-*.js.map
+/public/worker-*.js.map

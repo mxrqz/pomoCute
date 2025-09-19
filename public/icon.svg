@@ -1,0 +1,38 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#ff6b6b" stroke="#fff" stroke-width="16"/>
+
+  <!-- Timer face -->
+  <circle cx="256" cy="256" r="180" fill="#fff" stroke="#333" stroke-width="4"/>
+
+  <!-- Timer markings -->
+  <g stroke="#333" stroke-width="2">
+    <!-- 12 o'clock -->
+    <line x1="256" y1="96" x2="256" y2="116" />
+    <!-- 3 o'clock -->
+    <line x1="416" y1="256" x2="396" y2="256" />
+    <!-- 6 o'clock -->
+    <line x1="256" y1="416" x2="256" y2="396" />
+    <!-- 9 o'clock -->
+    <line x1="96" y1="256" x2="116" y2="256" />
+  </g>
+
+  <!-- Timer hands -->
+  <g stroke="#333" stroke-width="4" stroke-linecap="round">
+    <!-- Hour hand (pointing to 25 minutes - Pomodoro) -->
+    <line x1="256" y1="256" x2="256" y2="180" />
+    <!-- Minute hand -->
+    <line x1="256" y1="256" x2="320" y2="256" />
+  </g>
+
+  <!-- Center dot -->
+  <circle cx="256" cy="256" r="8" fill="#333"/>
+
+  <!-- Cute ears -->
+  <ellipse cx="200" cy="120" rx="20" ry="30" fill="#ff6b6b" transform="rotate(-20 200 120)"/>
+  <ellipse cx="312" cy="120" rx="20" ry="30" fill="#ff6b6b" transform="rotate(20 312 120)"/>
+
+  <!-- Inner ear -->
+  <ellipse cx="200" cy="120" rx="10" ry="18" fill="#ff9999" transform="rotate(-20 200 120)"/>
+  <ellipse cx="312" cy="120" rx="10" ry="18" fill="#ff9999" transform="rotate(20 312 120)"/>
+</svg>

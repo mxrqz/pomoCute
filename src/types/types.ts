@@ -10,7 +10,7 @@ interface PomodoroContextProps {
     selectedTimer: { timer: number, break: number, cycles: number, longBreak: number };
     setSelectedTimer: (timer: { timer: number, break: number, cycles: number, longBreak: number }) => void;
     timeLeft: number;
-    setTimeLeft: (timeLeft: number) => void;
+    setTimeLeft: (timeLeft: number | ((prev: number) => number)) => void;
     isBreak: boolean;
     setIsBreak: (isBreak: boolean) => void
 }
